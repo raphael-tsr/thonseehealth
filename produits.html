@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nos Produits - Thonsee Health</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="compte.js"></script>
+</head>
+<body>
+  <header class="tete">
+       <!-- Icône utilisateur -->
+    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
+  <a class="text-decoration" href="parametre.html"><div class="nomUser" id="userName" style="font-weight:bold; margin-left:5px;"></div></a>
+</div>
+    <div class="logo">Thonsee <span>Health</span></div>
+    <nav class="menu">
+      <a href="index.html">Accueil</a>
+      <a href="produits.html">Nos Produits</a>
+      <a href="contact.html">Contact</a>
+      <a href="panier.html">Panier <span id="cartCountNav" >0</span></a>
+      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+    </nav>
+  </header>
+  <main>
+    <h1 class="titre">Nos Compléments Premium</h1>
+    <div id="produits" class="produits-container">
+      <!-- Produit 1 -->
+      <div class="produit" data-nom="Omega-3 Élégance" data-prix="24.99">
+        <img src="Omega-3_Élégance-removebg-preview.png" alt="Omega-3 Élégance" />
+        <h3>Omega-3 Élégance</h3>
+        <p class="prix">24,99 €</p>
+        <button onclick="ajouterAuPanier(this)">Ajouter au panier</button>
+      </div>
+
+      <!-- Produit 2 -->
+      <div class="produit" data-nom="Vitamine D Luxe" data-prix="22.99">
+        <img src="Vitamine_D_Luxe-removebg-preview.png" alt="Vitamine D Luxe" />
+        <h3>Vitamine D Luxe</h3>
+        <p class="prix">22,99 €</p>
+        <button onclick="ajouterAuPanier(this)">Ajouter au panier</button>
+      </div>
+    </div>
+
+    <!-- Pop-up Inscription -->
+<div id="registerPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleRegisterPopup()">&times;</span>
+    <h2>Inscription</h2>
+    <form id="registerForm" autocomplete="on">
+      <input
+        type="text"
+        id="registerUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <input
+        type="password"
+        id="registerPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="new-password"
+        required
+      />
+      <button type="submit">Créer un compte</button>
+    </form>
+    <div id="registerMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+<!-- Pop-up Connexion -->
+<div id="loginPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleLoginPopup()">&times;</span>
+    <h2>Connexion</h2>
+    <form id="loginForm" autocomplete="on">
+      <input
+        list="usernames"
+        type="text"
+        id="loginUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <datalist id="usernames"></datalist>
+      <input
+        type="password"
+        id="loginPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="current-password"
+        required
+      />
+      <button type="submit">Se connecter</button>
+    </form>
+    <div id="loginMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Thonsee Health. Tous droits réservés.</p>
+  </footer>
+  <script>
+function ajouterAuPanier(button) {
+  const produitDiv = button.closest('.produit');
+
+  const nom = produitDiv.getAttribute('data-nom');
+  const prix = parseFloat(produitDiv.getAttribute('data-prix'));
+  const imgElem = produitDiv.querySelector('img');
+  const imageUrl = imgElem ? imgElem.src : '';
+
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) {
+    alert("Vous devez être connecté pour ajouter au panier.");
+    return;
+  }
+
+  // Panier spécifique à l'utilisateur
+  let panier = JSON.parse(localStorage.getItem(`cart_${currentUser}`)) || [];
+
+  const produitExistant = panier.find(item => item.nom === nom);
+
+  if (produitExistant) {
+    produitExistant.quantite++;
+  } else {
+    panier.push({ nom: nom, prix: prix, quantite: 1, imageUrl: imageUrl });
+  }
+
+  localStorage.setItem(`cart_${currentUser}`, JSON.stringify(panier));
+
+  updateCartCount();
+  alert(`${nom} a été ajouté au panier !`);
+}
+
+function getCart() {
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) return [];
+  return JSON.parse(localStorage.getItem(`cart_${currentUser}`)) || [];
+}
+
+function updateCartCount() {
+  const cart = getCart();
+  const totalQuantity = cart.reduce((sum, item) => sum + (item.quantite || 0), 0);
+  const countElem = document.getElementById('cartCountNav');
+  if (!countElem) return;
+
+  if (totalQuantity > 0) {
+    countElem.style.display = 'inline';
+    countElem.textContent = totalQuantity;
+  } else {
+    countElem.style.display = 'none';
+  }
+}
+
+// Affiche le nom d'utilisateur ou "Non connecté"
+function afficherNomUtilisateur() {
+  const currentUser = localStorage.getItem('currentUser');
+  const userNameDiv = document.getElementById('userName');
+
+  if (userNameDiv) {
+    userNameDiv.textContent = currentUser ? currentUser : "Non connecté";
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateCartCount();
+  afficherNomUtilisateur();
+});
+</script>
+
+
+
+</body>
+</html>

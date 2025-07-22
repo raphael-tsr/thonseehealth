@@ -1,0 +1,493 @@
+body {
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  background-color: #0D0D0D;
+  color: #FAF9F6;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #0D0D0D;
+  border-bottom: 1px solid #FFD700;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #FFD700;
+}
+
+.logo1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #FFD700;
+}
+
+.logo span {
+  color: #FAF9F6;
+}
+
+.logo1 span {
+  color: #FAF9F6;
+}
+
+nav a {
+  color: #FAF9F6;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: #FFD700;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #888;
+  border-top: 1px solid #FFD700;
+  margin-top: 60px;
+}
+
+/* Produit + Panier */
+
+
+.produits-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.produit {
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border: 1px solid #333;
+  text-align: center;
+  border-radius: 10px;
+  width: 220px;
+  transition: transform 0.2s;
+}
+
+.produit:hover {
+  transform: scale(1.03);
+}
+
+.produit img {
+  width: 100%;
+  height: 200px;
+  max-height: 200px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.produit h3 {
+  margin: 1rem 0 0.5rem 0;
+}
+
+.produit .prix {
+  color: #FFD700;
+  font-weight: bold;
+}
+
+.produit button {
+  background-color: #FFD700;
+  color: #000;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+#totalPanier {
+  margin: 2rem auto;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #FFD700;
+}
+
+/* Popup */
+
+.popup {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background-color: #121212;
+  padding: 30px;
+  border: 1px solid #FFD700;
+  border-radius: 8px;
+  color: #FAF9F6;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.popup-content input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #FFD700;
+  background-color: #0D0D0D;
+  color: #FAF9F6;
+  border-radius: 4px;
+}
+
+.popup-content button {
+  background-color: #FFD700;
+  color: #0D0D0D;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.popup-content .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #FFD700;
+}
+
+.popup-toggle {
+  background-color: transparent;
+  border: 1px solid #FFD700;
+  color: #FFD700;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 900;
+}
+
+/* Icône utilisateur */
+
+.hidden {
+  display: none;
+}
+
+.user-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #FFD700;
+  font-size: 22px;
+  background-color: #1a1a1a;
+  border-radius: 50%;
+}
+
+/* pop up historique */
+.popup-content ul li {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #444;
+  color: #FFD700;
+}
+
+.popup-content ul li:hover {
+  background-color: #333;
+}
+
+/* --------------------------------------------ACCUEIL */
+
+.menu {
+  width: 600px;
+  text-align: center;
+  align-items: center;
+  margin-right: 150px;
+  margin-top: 15px;
+  height: 40px;
+  position: absolute;
+  right: 0;
+}
+
+.menu1 {
+  margin-right: -150px;
+  width: 600px;
+}
+
+.logo {
+  position: absolute;
+  text-align: center;
+}
+
+.logo1 {
+  margin-left: 0px;
+}
+
+
+
+/* Style du header (si pas déjà présent) */
+.tete {
+  position: relative;
+  height: 60px; /* ou autre valeur selon ton design */
+  background-color: #333; /* par exemple */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.user {
+  display: flex;
+  flex-direction: column;  
+  align-items: center;     
+  justify-content: center;   /* centrage vertical corrigé */
+
+
+
+  width: 145px;             
+
+  height: 70px;             /* augmenté pour contenir icône + texte */
+
+  border-radius: 8px;
+
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+
+  box-sizing: border-box;
+
+  z-index: 9999;
+}
+
+
+/* Icône utilisateur */
+
+#userIcon {
+  font-size: 24px;
+  margin-bottom: 5px;      /* espace sous l’icône */
+  color: white;          /* si c’est une icône font-awesome par exemple */
+}
+
+/* Nom d'utilisateur centré et limité à 15 caractères */
+
+.nomUser#userName {
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  font-weight: bold;
+  color: #fff;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Supprime les soulignements des liens */
+.text-decoration {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+
+
+.slogan1 {
+  margin: 0 auto 80px auto;
+  position: relative;
+  color: #FAF9F6;
+  text-align: center; /* important */
+}
+
+.slogan {
+  padding: 60px 20px 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto 80px auto;
+  position: relative;
+  background-color: rgba(13, 13, 13, 0.85);
+  border-radius: 12px;
+  color: #FAF9F6;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+  text-align: left; /* important */
+}
+
+.titre {
+  width: 500px;
+  text-align: center;
+  margin-left: center;
+  align-items: center;
+}
+
+section {
+  padding: 60px 20px 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto 80px auto;
+  position: relative;
+  background-color: rgba(13, 13, 13, 0.85);
+  border-radius: 12px;
+  color: #FAF9F6;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+  text-align: left; /* important */
+  align-items: center;
+}
+
+/* Titre en haut à gauche, décalé avec margin-left */
+
+section h2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #FFD700;
+  margin-left: 10px; /* décale du bord gauche */
+  margin-top: 10px;  /* espace au-dessus du h2 */
+  margin-bottom: 0.5em; /* petit espace en dessous */
+  text-shadow: 0 0 6px #FFD700;
+  width: auto; /* taille en fonction du texte */
+  display: inline-block; /* que la largeur soit minimale, pas 100% */
+  position: relative; /* permet top/left si besoin, sinon inutile */
+}
+
+
+
+/* Texte des paragraphes : on centre ou on justifie, mais pas le titre */
+
+section p {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: justify;
+  color: #eee;
+}
+
+/* Responsive : sur grand écran, on garde flex avec image + texte */
+
+/* Sur mobile on centre un peu tout sauf le titre */
+
+@media (max-width: 767px) {
+  section {
+    flex-direction: column;
+  }
+  section .presentation-img {
+    max-width: 90%;
+    margin-bottom: 30px;
+  }
+  section p {
+    text-align: center;
+  }
+  /* Titre un peu décalé même sur mobile */
+  section h2 {
+    margin-left: 20px;
+  }
+}
+
+/* confirmer la commande */
+
+.commande {
+  margin-top:20px; 
+  padding:10px 20px; 
+  background:#FFD700; 
+  color:#000; 
+  border:none; 
+  border-radius:5px; 
+  cursor:pointer;
+  margin-left: 850px;
+}
+
+    #cartCountNav {
+      display:none; 
+      background:red; 
+      color:white; 
+      font-size:12px; 
+      border-radius:50%; 
+      padding:2px 6px; 
+      position:relative; 
+      top:-10px; 
+      left:-5px;
+    }
+    table {
+      width: 1000px;
+      margin-left: 450px;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #3f3d3d;
+      text-align: center;
+    }
+
+    th {
+      background-color: #FFD700;
+      color: #000000;
+    }
+    img {
+      max-height: 50px;
+    }
+
+    td button {
+  background-color: #0D0D0D; /* rouge par défaut */
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+td button:hover {
+  background-color: #d32f2f; /* rouge foncé au survol */
+}
+
+td input[type="number"] {
+  width: 70px;
+  padding: 6px 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+  /* On laisse les flèches par défaut */
+}
+
+/* Au focus */
+td input[type="number"]:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+
+/* Petite astuce pour mieux afficher les flèches sur Chrome */
+td input[type="number"]::-webkit-inner-spin-button,
+td input[type="number"]::-webkit-outer-spin-button {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+td input[type="number"]:hover::-webkit-inner-spin-button,
+td input[type="number"]:hover::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+/* Firefox laisse les flèches visibles par défaut, mais tu peux les styliser un peu */

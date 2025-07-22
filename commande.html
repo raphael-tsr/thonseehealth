@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Commandes</title>
+<style>
+  body {
+    background-color: #0D0D0D;
+    color: #FAF9F6;
+    font-family: 'Lato', sans-serif;
+    margin: 20px;
+  }
+  h1 {
+    color: #FFD700;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  table {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 10px;
+    border: 1px solid #333;
+    text-align: center;
+  }
+  th {
+    background-color: #FFD700;
+    color: #000;
+  }
+  tbody tr:nth-child(odd) {
+    background-color: #1a1a1a;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #121212;
+  }
+  .commande-total {
+    font-weight: bold;
+    color: #FFD700;
+    margin-top: -10px;
+    margin-bottom: 40px;
+    text-align: right;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body>
+
+<h1>Historique des Commandes</h1>
+<div id="commandes-container"></div>
+
+<script>
+const userName = localStorage.getItem("currentUser") || "Invité";
+
+if (userName === "Invité") {
+  alert("Vous devez être connecté pour voir vos commandes.");
+  window.location.href = "login.html"; // Redirige si non connecté
+}
+
+async function chargerCommandes() {
+  try {
+    const res = await fetch("http://localhost:3000/api/commandes");
+    if (!res.ok) throw new Error("Erreur lors du chargement des commandes");
+
+    const commandes = await res.json();
+    const container = document.getElementById("commandes-container");
+    container.innerHTML = "";
+
+    const commandesUtilisateur = commandes.filter(cmd => cmd.utilisateur === userName);
+
+    if (commandesUtilisateur.length === 0) {
+      container.innerHTML = "<p>Aucune commande trouvée pour cet utilisateur.</p>";
+      return;
+    }
+
+    commandesUtilisateur.forEach((commande, index) => {
+      const date = new Date(commande.date);
+      const dateStr = date.toLocaleDateString("fr-FR");
+      const heureStr = date.toLocaleTimeString("fr-FR");
+
+      let totalCommande = 0;
+      commande.panier.forEach(item => {
+        totalCommande += item.prix * item.quantite;
+      });
+
+      const html = `
+        <h2>Commande ${index + 1}</h2>
+        <p>Date : ${dateStr} à ${heureStr}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Article</th>
+              <th>Prix unitaire</th>
+              <th>Quantité</th>
+              <th>Sous-total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${commande.panier.map(item => `
+              <tr>
+                <td>${item.nom}</td>
+                <td>${item.prix.toFixed(2)} €</td>
+                <td>${item.quantite}</td>
+                <td>${(item.prix * item.quantite).toFixed(2)} €</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div class="commande-total">Total commande : ${totalCommande.toFixed(2)} €</div>
+      `;
+
+      container.insertAdjacentHTML("beforeend", html);
+    });
+
+  } catch (err) {
+    document.getElementById("commandes-container").innerHTML = `<p style="color:red;">${err.message}</p>`;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', chargerCommandes);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voir mes commandes</title>
+  <style>
+    .commande {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .commande img {
+      max-width: 50px;
+      margin-right: 10px;
+    }
+    #popup {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      max-height: 80vh;
+      overflow: auto;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="openPopup()">Mes commandes</button>
+
+  <div id="popup">
+    <h2>Vos commandes</h2>
+    <div id="commandeList"></div>
+    <button onclick="closePopup()">Fermer</button>
+  </div>
+
+  <script>
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    async function openPopup() {
+      const popup = document.getElementById("popup");
+      const list = document.getElementById("commandeList");
+      list.innerHTML = "";
+
+      // Remplace ici par l'utilisateur courant
+      const currentUser = localStorage.getItem("currentUser") || "jean";
+      console.log("Utilisateur actuel:", currentUser);
+
+      try {
+        const res = await fetch("http://localhost:3000/api/commandes");
+        if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+        const data = await res.json();
+        console.log("Commandes reçues :", data);
+
+        if (!Array.isArray(data)) {
+          list.innerHTML = "<p>Erreur : format des données incorrect.</p>";
+          popup.style.display = "block";
+          return;
+        }
+
+        const commandes = data.filter(cmd => cmd.utilisateur === currentUser);
+
+        if (commandes.length === 0) {
+          list.innerHTML = "<p>Aucune commande trouvée pour cet utilisateur.</p>";
+        } else {
+          commandes.forEach(cmd => {
+            const dateHTML = `<p><strong>Date :</strong> ${new Date(cmd.date).toLocaleString()}</p>`;
+
+            const articlesHTML = cmd.panier.map(article => `
+              <div class="commande">
+                <img src="${article.imageUrl || 'https://via.placeholder.com/50'}" alt="${article.nom}" />
+                <div>
+                  <p><strong>${article.nom}</strong></p>
+                  <p>${article.quantite} x ${article.prix.toFixed(2)}€</p>
+                </div>
+              </div>
+            `).join("");
+
+            list.innerHTML += `<div>${dateHTML}${articlesHTML}</div><hr />`;
+          });
+        }
+
+        popup.style.display = "block";
+      } catch (err) {
+        console.error("Erreur pendant le fetch :", err);
+        list.innerHTML = "<p>Erreur lors de la récupération des commandes.</p>";
+        popup.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

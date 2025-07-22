@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact - Thonsee Health</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="compte.js"></script>
+</head>
+<body>
+  <header class="tete">
+       <!-- Icône utilisateur -->
+    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
+  <a class="text-decoration" href="parametre.html"><div class="nomUser" id="userName" style="font-weight:bold; margin-left:5px;"></div></a>
+</div>
+    <div class="logo">Thonsee <span>Health</span></div>
+    <nav class="menu">
+      <a href="index.html">Accueil</a>
+      <a href="produits.html">Nos Produits</a>
+      <a href="contact.html">Contact</a>
+      <a href="panier.html">Panier <span id="cartCountNav" >0</span></a>
+      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+    </nav>
+  </header>
+  <main>
+    <h1 class="titre">Contactez-nous</h1>
+    <p>Utilisez le formulaire ou nos coordonnées pour toute question.</p>
+  </main>
+  <footer>
+    <p>&copy; 2025 Thonsee Health. Tous droits réservés.</p>
+  </footer>
+  <div id="accountPopup" class="popup hidden">
+    <div class="popup-content">
+      <span class="close-btn" onclick="togglePopup()">&times;</span>
+      <h2>Connexion / Inscription</h2>
+      <form id="accountForm">
+        <input type="text" id="popupUsername" placeholder="Nom d'utilisateur" required />
+        <input type="password" id="popupPassword" placeholder="Mot de passe" required />
+        <button type="submit">Se connecter / Créer un compte</button>
+      </form>
+      <div id="popupMessage"></div>
+    </div>
+  </div>
+
+<!-- Pop-up Inscription -->
+<div id="registerPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleRegisterPopup()">&times;</span>
+    <h2>Inscription</h2>
+    <form id="registerForm" autocomplete="on">
+      <input
+        type="text"
+        id="registerUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <input
+        type="password"
+        id="registerPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="new-password"
+        required
+      />
+      <button type="submit">Créer un compte</button>
+    </form>
+    <div id="registerMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+<!-- Pop-up Connexion -->
+<div id="loginPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleLoginPopup()">&times;</span>
+    <h2>Connexion</h2>
+    <form id="loginForm" autocomplete="on">
+      <input
+        list="usernames"
+        type="text"
+        id="loginUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <datalist id="usernames"></datalist>
+      <input
+        type="password"
+        id="loginPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="current-password"
+        required
+      />
+      <button type="submit">Se connecter</button>
+    </form>
+    <div id="loginMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+  <script>
+
+// Appel au chargement de la page
+window.addEventListener('DOMContentLoaded', updateCartCount);
+
+</script>
+
+<!-- notif panier -->
+
+<script>
+async function majNotifCommandes() {
+  const userName = localStorage.getItem("currentUser");
+  const notifElem = document.getElementById("notifCommande");
+
+  if (!userName || !notifElem) return;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/commandes");
+    if (!res.ok) throw new Error("Erreur API");
+
+    const commandes = await res.json();
+    const commandesUser = commandes.filter(cmd => cmd.utilisateur === userName);
+
+    if (commandesUser.length > 0) {
+      notifElem.textContent = commandesUser.length;
+      notifElem.style.display = "inline-block";
+    } else {
+      notifElem.style.display = "none";
+    }
+  } catch (err) {
+    console.error("Erreur chargement commandes :", err.message);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', majNotifCommandes);
+</script>
+</body>
+</html>

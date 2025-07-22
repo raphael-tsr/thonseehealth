@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Compte Utilisateur</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #fbfbfb;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .account {
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      margin-bottom: 30px;
+    }
+
+    /* Popup comptes */
+    #accountsPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 90vw;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      color: #ffffff;
+      text-align: left;
+    }
+
+    .commande {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      float: right;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 20px;
+      user-select: none;
+    }
+
+    a {
+      color: #ffe100;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #ff4444;
+      border: none;
+      border-radius: 5px;
+      color: #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #cc0000;
+    }
+
+    /* Liste comptes */
+    #accountsList li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 5px;
+      user-select: none;
+    }
+
+    #accountsList li:hover {
+      background-color: #333;
+    }
+
+    #accountsList button {
+      background: rgb(255, 0, 0);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 2px 6px;
+      margin-left: 10px;
+      margin-top: 0px;
+    }
+
+    #accountsPopup h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="account">
+    <h2>Compte de <span id="usernameDisplay"></span></h2>
+    <p><strong>Mot de passe :</strong> <span id="passwordDisplay">********</span></p>
+
+    <p><strong>Paramètres</strong></p>
+
+    <button id="deleteAccountBtn">Suppression de compte actuel</button><br />
+    <button onclick="toggleAccountsPopup()">Gérer mes comptes</button><br />
+    <button onclick="window.location.href='commande.html'">Mes commandes</button>
+  </div>
+
+  <!-- Popup Comptes -->
+  <div id="accountsPopup" class="popup">
+    <span class="close-btn" onclick="toggleAccountsPopup()">✖</span>
+    <h3>Mes comptes</h3>
+    <ul id="accountsList"></ul>
+  </div>
+
+  <script>
+    // Récupération des comptes et utilisateur courant
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+    let currentUser = localStorage.getItem("currentUser");
+
+    function afficherUtilisateur(user) {
+      currentUser = user;
+      localStorage.setItem("currentUser", user);
+      document.getElementById("usernameDisplay").textContent = user;
+      document.getElementById("passwordDisplay").textContent = accounts[user] || "********";
+    }
+
+    if (!currentUser || !accounts[currentUser]) {
+      document.querySelector(".account").innerHTML = "<p>Aucun utilisateur connecté.</p>";
+    } else {
+      afficherUtilisateur(currentUser);
+    }
+
+    // Supprimer compte actuel
+    document.getElementById("deleteAccountBtn").addEventListener("click", () => {
+      if (confirm("Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible.")) {
+        let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+        const currentUser = localStorage.getItem("currentUser");
+
+        if (currentUser && accounts[currentUser]) {
+          delete accounts[currentUser];
+          localStorage.setItem("accounts", JSON.stringify(accounts));
+          localStorage.removeItem("currentUser");
+          alert("Compte supprimé avec succès.");
+          location.reload();
+        }
+      }
+    });
+
+    // --- Gestion popup comptes ---
+    function toggleAccountsPopup() {
+      const popup = document.getElementById('accountsPopup');
+      if (popup.style.display === 'block') {
+        popup.style.display = 'none';
+      } else {
+        afficherComptes();
+        popup.style.display = 'block';
+      }
+    }
+
+    // Affiche la liste des comptes avec boutons "Supprimer"
+    function afficherComptes() {
+      const ul = document.getElementById('accountsList');
+      ul.innerHTML = '';
+
+      const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
+      const currentUser = localStorage.getItem('currentUser');
+
+      if (Object.keys(accounts).length === 0) {
+        const li = document.createElement('li');
+        li.textContent = "Aucun compte enregistré.";
+        ul.appendChild(li);
+        return;
+      }
+
+      Object.keys(accounts).forEach(username => {
+        const li = document.createElement('li');
+
+        // Texte nom utilisateur, style et clic pour changer de compte
+        const nomSpan = document.createElement('span');
+        nomSpan.textContent = username + (username === currentUser ? " (actuel)" : "");
+        nomSpan.style.fontWeight = username === currentUser ? 'bold' : 'normal';
+
+        nomSpan.onclick = () => {
+          if (username === currentUser) {
+            toggleAccountsPopup();
+            return;
+          }
+          const mdp = prompt(`Entrez le mot de passe pour ${username} :`);
+          if (!mdp) return;
+          if (accounts[username] === mdp) {
+            localStorage.setItem('currentUser', username);
+            afficherUtilisateur(username);
+            toggleAccountsPopup();
+            alert(`Connecté en tant que ${username}`);
+          } else {
+            alert('Mot de passe incorrect.');
+          }
+        };
+
+        // Bouton supprimer compte
+        const btnSupprimer = document.createElement('button');
+        btnSupprimer.textContent = 'Supprimer';
+        btnSupprimer.onclick = (e) => {
+          e.stopPropagation();
+          if (confirm(`Supprimer définitivement le compte "${username}" ?`)) {
+            supprimerCompte(username);
+          }
+        };
+
+        li.appendChild(nomSpan);
+        li.appendChild(btnSupprimer);
+        ul.appendChild(li);
+      });
+    }
+
+    // Supprime un compte
+    function supprimerCompte(username) {
+      const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
+      delete accounts[username];
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser === username) {
+        localStorage.removeItem('currentUser');
+        alert('Vous avez supprimé votre compte actuel. Veuillez vous reconnecter.');
+        location.reload();
+      } else {
+        afficherComptes();
+      }
+    }
+  </script>
+
+</body>
+
+</html>

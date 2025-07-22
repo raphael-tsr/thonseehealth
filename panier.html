@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="compte.js"></script>
+  <title>Panier - Thonsee Health</title>
+</head>
+
+<body>
+
+<header class="tete">
+       <!-- Icône utilisateur -->
+    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
+  <a class="text-decoration" href="parametre.html"><div class="nomUser" id="userName" style="font-weight:bold; margin-left:5px;"></div></a>
+</div>
+    <div class="logo">Thonsee <span>Health</span></div>
+    <nav class="menu">
+      <a href="index.html">Accueil</a>
+      <a href="produits.html">Nos Produits</a>
+      <a href="contact.html">Contact</a>
+      <a href="panier.html">Panier <span id="cartCountNav" >0</span></a>
+      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+    </nav>
+  </header>
+
+  <main style="padding: 20px;">
+    <h1 class="titre">Votre panier</h1>
+    <div id="cartItems"></div>
+
+    <button class="commande" onclick="confirmerCommande()">
+      Confirmer la commande
+    </button>
+
+    <p id="confirmationMessage" style="color:green; margin-top:10px;"></p>
+    <p id="totalPanier" style="font-weight:bold; margin-top:10px;">Total : 0,00 €</p>
+  </main>
+
+  <!-- Pop-up Inscription -->
+<div id="registerPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleRegisterPopup()">&times;</span>
+    <h2>Inscription</h2>
+    <form id="registerForm" autocomplete="on">
+      <input
+        type="text"
+        id="registerUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <input
+        type="password"
+        id="registerPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="new-password"
+        required
+      />
+      <button type="submit">Créer un compte</button>
+    </form>
+    <div id="registerMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+<!-- Pop-up Connexion -->
+<div id="loginPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleLoginPopup()">&times;</span>
+    <h2>Connexion</h2>
+    <form id="loginForm" autocomplete="on">
+      <input
+        list="usernames"
+        type="text"
+        id="loginUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <datalist id="usernames"></datalist>
+      <input
+        type="password"
+        id="loginPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="current-password"
+        required
+      />
+      <button type="submit">Se connecter</button>
+    </form>
+    <div id="loginMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+<script>
+  const userName = localStorage.getItem("currentUser") || "JeanDupond";
+
+  function getCart() {
+    return JSON.parse(localStorage.getItem(`cart_${userName}`)) || [];
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(`cart_${userName}`, JSON.stringify(cart));
+  }
+
+  function updateCartCount() {
+    const cart = getCart();
+    const totalQuantity = cart.reduce((sum, item) => sum + item.quantite, 0);
+    const countElem = document.getElementById('cartCountNav');
+    countElem.textContent = totalQuantity;
+    countElem.style.display = totalQuantity > 0 ? 'inline' : 'none';
+  }
+
+  function supprimerProduit(index) {
+    const cart = getCart();
+    cart.splice(index, 1);
+    saveCart(cart);
+    displayCart();
+    updateCartCount();
+  }
+
+  function modifierQuantite(index, nouvelleQuantite) {
+    const cart = getCart();
+    nouvelleQuantite = parseInt(nouvelleQuantite);
+    if (nouvelleQuantite < 1) {
+      supprimerProduit(index);
+      return;
+    }
+    cart[index].quantite = nouvelleQuantite;
+    saveCart(cart);
+    displayCart();
+    updateCartCount();
+  }
+
+  function displayCart() {
+    const cart = getCart();
+    const container = document.getElementById('cartItems');
+    const totalElem = document.getElementById('totalPanier');
+    container.innerHTML = '';
+
+    if (cart.length === 0) {
+      container.textContent = "Votre panier est vide.";
+      totalElem.textContent = "Total : 0,00 €";
+      return;
+    }
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+      <tr>
+        <th>Image</th>
+        <th>Nom</th>
+        <th>Prix</th>
+        <th>Quantité</th>
+        <th>Sous-total</th>
+        <th>Supprimer</th>
+      </tr>`;
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    let totalPrice = 0;
+
+    cart.forEach((item, index) => {
+      const sousTotal = item.prix * item.quantite;
+      totalPrice += sousTotal;
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td><img src="${item.imageUrl || 'produit-removebg-preview.png'}" alt="Image du produit" width="60"></td>
+        <td>${item.nom}</td>
+        <td>${item.prix.toFixed(2)} €</td>
+        <td><input type="number" min="1" value="${item.quantite}" onchange="modifierQuantite(${index}, this.value)" style="width:60px;"></td>
+        <td>${sousTotal.toFixed(2)} €</td>
+        <td><button onclick="supprimerProduit(${index})">🗑️</button></td>`;
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    container.appendChild(table);
+
+    totalElem.textContent = `Total : ${totalPrice.toFixed(2)} €`;
+  }
+
+  function confirmerCommande() {
+    const panier = getCart();
+    if (panier.length === 0) {
+      alert("Votre panier est vide.");
+      return;
+    }
+
+    fetch("http://localhost:3000/api/commandes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ utilisateur: userName, panier })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("confirmationMessage").textContent = "✅ Commande confirmée avec succès.";
+          localStorage.removeItem(`cart_${userName}`);
+          displayCart();
+          updateCartCount();
+        } else {
+          alert("Erreur lors de l'enregistrement.");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        alert("Erreur de communication avec le serveur.");
+      });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    displayCart();
+    updateCartCount();
+  });
+</script>
+
+</body>
+
+</html>

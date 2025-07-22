@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thonsee Health - Accueil</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="compte.js"></script>
+</head>
+
+<body>
+  <header class="tete">
+        <!-- Icône utilisateur -->
+    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
+  <a class="text-decoration" href="parametre.html"><div class="nomUser" id="userName" style="font-weight:bold; margin-left:5px;"></div></a>
+</div>
+    <div class="logo">Thonsee <span>Health</span></div>
+    <nav class="menu">
+      <a href="index.html">Accueil</a>
+      <a href="produits.html">Nos Produits</a>
+      <a href="contact.html">Contact</a>
+      <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
+      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+    </nav>
+  </header>
+
+
+  <main>
+    <!-- Section Accueil -->
+    <section id="accueil" class="slogan">
+      <h1 class="titre">Élevez votre bien-être au rang du luxe.</h1>
+      <p class="slogan1">Compléments alimentaires premium – Naturels, efficaces, élégants.</p>
+    </section>
+
+    <!-- Section Blog -->
+    <section id="blog" class="section">
+      <h2>Blog Santé & Bien-être</h2>
+      <p>
+        Bienvenue sur notre blog dédié au bien-être et à la santé naturelle. Ici, nous partageons des conseils approfondis,
+        des recettes naturelles et des astuces pour améliorer votre qualité de vie au quotidien. Chaque article est
+        rédigé avec soin pour vous accompagner dans votre quête d’équilibre et de vitalité.
+      </p>
+      <p>
+        L’importance d’une alimentation saine, les vertus des plantes médicinales, ou encore les dernières recherches en
+        nutrition sont autant de sujets que nous abordons régulièrement. Nous croyons fermement que la santé passe par
+        une approche globale mêlant science et respect de la nature.
+      </p>
+      <p>
+        N’hésitez pas à parcourir nos articles pour découvrir comment intégrer facilement ces conseils dans votre routine,
+        et vivre pleinement votre potentiel au naturel.
+      </p>
+      <p>
+        En plus, nous mettons à disposition des guides pratiques pour choisir les meilleurs compléments alimentaires,
+        comprendre leurs effets, et éviter les idées reçues. Votre bien-être est notre priorité, et notre blog est là pour
+        vous éclairer sur chaque étape de votre parcours.
+      </p>
+    </section>
+
+    <!-- Section Témoignages -->
+    <section id="temoignages" class="section">
+      <h2>Témoignages</h2>
+      <p>
+        « Depuis que j’utilise les compléments Thonsee Health, j’ai ressenti un regain d’énergie incroyable. Leur qualité est
+        irréprochable et le service client est toujours à l’écoute. » – Marie L.
+      </p>
+      <p>
+        « Des produits d’une pureté exceptionnelle, alliant efficacité et plaisir d’utilisation. Je recommande vivement à
+        tous ceux qui veulent prendre soin d’eux naturellement. » – Julien P.
+      </p>
+      <p>
+        « Ce que j’apprécie le plus, c’est la transparence de la marque. On sait exactement ce qu’on ingère, et ça fait
+        toute la différence dans ma confiance et ma fidélité. » – Sophie M.
+      </p>
+      <p>
+        « Grâce à Thonsee Health, j’ai réussi à améliorer ma digestion et mon sommeil sans effets secondaires. Une vraie
+        révélation ! » – Ahmed K.
+      </p>
+    </section>
+
+    <!-- Section Science -->
+    <section id="science" class="section">
+      <h2>La Science derrière Thonsee Health</h2>
+      <p>
+        Chez Thonsee Health, la recherche scientifique est au cœur de nos développements. Chaque ingrédient est sélectionné
+        selon des critères rigoureux basés sur des études cliniques et des preuves scientifiques solides.
+      </p>
+      <p>
+        Notre équipe collabore avec des experts en nutrition, biologie et pharmacologie pour formuler des compléments
+        qui optimisent votre santé sans compromis. Nous testons également la biodisponibilité de chaque substance afin
+        d'assurer une absorption maximale.
+      </p>
+      <p>
+        La transparence est primordiale : toutes nos formules sont documentées et soumises à des contrôles qualité
+        stricts. Nous évitons les additifs superflus, privilégions les sources naturelles et traçons chaque lot de
+        production.
+      </p>
+      <p>
+        Cette approche scientifique et responsable garantit des produits haut de gamme, efficaces et sûrs, qui répondent
+        aux attentes des consommateurs exigeants et soucieux de leur santé.
+      </p>
+    </section>
+
+    <!-- Section À propos -->
+    <section id="apropos" class="section">
+      <h2>À propos de Thonsee Health</h2>
+      <p>
+        Thonsee Health est née d’une passion commune pour la santé naturelle et le luxe discret. Notre mission est de
+        proposer des compléments alimentaires d’exception, qui allient pureté, efficacité et esthétique.
+      </p>
+      <p>
+        Fondée par une équipe de spécialistes engagés, la marque s’appuie sur des valeurs fortes : respect de l’environnement,
+        transparence totale, et quête d’innovation. Chaque produit est le fruit d’un travail rigoureux pour vous offrir
+        une expérience unique.
+      </p>
+      <p>
+        Nous croyons en une approche holistique du bien-être, où science et nature cohabitent harmonieusement pour
+        révéler le meilleur de vous-même. Rejoignez-nous dans cette aventure vers une santé plus belle, plus saine,
+        plus luxueuse.
+      </p>
+      <p>
+        Merci de faire confiance à Thonsee Health.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Thonsee Health. Tous droits réservés.</p>
+  </footer>
+
+<!-- Pop-up Inscription -->
+<div id="registerPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleRegisterPopup()">&times;</span>
+    <h2>Inscription</h2>
+    <form id="registerForm" autocomplete="on">
+      <input
+        type="text"
+        id="registerUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <input
+        type="password"
+        id="registerPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="new-password"
+        required
+      />
+      <button type="submit">Créer un compte</button>
+    </form>
+    <div id="registerMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+<!-- Pop-up Connexion -->
+<div id="loginPopup" class="popup hidden">
+  <div class="popup-content">
+    <span class="close-btn" onclick="toggleLoginPopup()">&times;</span>
+    <h2>Connexion</h2>
+    <form id="loginForm" autocomplete="on">
+      <input
+        list="usernames"
+        type="text"
+        id="loginUsername"
+        name="username"
+        placeholder="Nom d'utilisateur"
+        maxlength="15"
+        autocomplete="username"
+        required
+      />
+      <datalist id="usernames"></datalist>
+      <input
+        type="password"
+        id="loginPassword"
+        name="password"
+        placeholder="Mot de passe"
+        maxlength="12"
+        autocomplete="current-password"
+        required
+      />
+      <button type="submit">Se connecter</button>
+    </form>
+    <div id="loginMessage" style="color: rgb(255, 255, 255);"></div>
+  </div>
+</div>
+
+</body>
+
+<script>
+  // Appelé au chargement de chaque page
+  window.addEventListener('DOMContentLoaded', updateCartCount);
+</script>
+
+<!-- notif panier -->
+
+<script>
+async function majNotifCommandes() {
+  const userName = localStorage.getItem("currentUser");
+  const notifElem = document.getElementById("notifCommande");
+
+  if (!userName || !notifElem) return;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/commandes");
+    if (!res.ok) throw new Error("Erreur API");
+
+    const commandes = await res.json();
+    const commandesUser = commandes.filter(cmd => cmd.utilisateur === userName);
+
+    if (commandesUser.length > 0) {
+      notifElem.textContent = commandesUser.length;
+      notifElem.style.display = "inline-block";
+    } else {
+      notifElem.style.display = "none";
+    }
+  } catch (err) {
+    console.error("Erreur chargement commandes :", err.message);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', majNotifCommandes);
+
+  const MAX_USERNAME_LENGTH = 15;
+  const MAX_PASSWORD_LENGTH = 12;
+
+  // === Formulaire Inscription ===
+  const usernameInput = document.getElementById('registerUsername');
+  const passwordInput = document.getElementById('registerPassword');
+  const registerMessage = document.getElementById('registerMessage');
+
+  if (usernameInput && passwordInput && registerMessage) {
+    usernameInput.addEventListener('input', () => {
+      if (usernameInput.value.length > MAX_USERNAME_LENGTH) {
+        registerMessage.textContent = `Nom d'utilisateur trop long (max ${MAX_USERNAME_LENGTH} caractères)`;
+        usernameInput.value = usernameInput.value.slice(0, MAX_USERNAME_LENGTH);
+      } else {
+        registerMessage.textContent = "";
+      }
+    });
+
+    passwordInput.addEventListener('input', () => {
+      if (passwordInput.value.length > MAX_PASSWORD_LENGTH) {
+        registerMessage.textContent = `Mot de passe trop long (max ${MAX_PASSWORD_LENGTH} caractères)`;
+        passwordInput.value = passwordInput.value.slice(0, MAX_PASSWORD_LENGTH);
+      } else {
+        registerMessage.textContent = "";
+      }
+    });
+  }
+
+  // === Formulaire Connexion ===
+  document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    const loginUsername = document.getElementById("loginUsername");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginMessage = document.getElementById("loginMessage");
+
+    if (!loginForm) return;
+
+    loginForm.addEventListener("submit", function (e) {
+      const username = loginUsername.value.trim();
+      const password = loginPassword.value.trim();
+
+      if (username.length > MAX_USERNAME_LENGTH) {
+        e.preventDefault();
+        loginMessage.textContent = `Le nom d'utilisateur ne peut pas dépasser ${MAX_USERNAME_LENGTH} caractères.`;
+        return;
+      }
+
+      if (password.length > MAX_PASSWORD_LENGTH) {
+        e.preventDefault();
+        loginMessage.textContent = `Le mot de passe ne peut pas dépasser ${MAX_PASSWORD_LENGTH} caractères.`;
+        return;
+      }
+
+      loginMessage.textContent = "";
+    });
+  });
+
+
+</script>
+
+
+</html>
+
