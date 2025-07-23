@@ -528,20 +528,16 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
 /* ----------------------------- VERSION MOBILE ----------------------------- */
 /* Cacher le contenu du header sur mobile (par défaut) */
 
-/* --- MOBILE SEULEMENT --- */
+/* Mobile seulement */
 @media (max-width: 768px) {
 
   .menu-toggle {
     display: block;
     z-index: 2000;
-    font-size: 20px;
-    font-weight: bold;
-    color: #FFD700;
-    padding: 10px;
   }
 
   .header-content {
-    display: none; /* caché par défaut */
+    display: none;
     flex-direction: column;
     width: 100%;
     background-color: #0D0D0D;
@@ -551,7 +547,7 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
     margin-top: 10px;
 
     /* Décalage vers la gauche */
-    transform: translateX(-60px);
+    margin-left: -60px;
   }
 
   .header-content.show-on-mobile {
@@ -571,31 +567,15 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
   }
 
   .user {
+    position: static;
     margin: 10px auto;
   }
 
   .logo {
+    position: static;
     text-align: center;
     margin: 10px auto;
     font-size: 20px;
-  }
-}
-
-/* --- VERSION ORDINATEUR --- */
-@media (min-width: 769px) {
-  .menu-toggle {
-    display: none;
-  }
-
-  .header-content {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .menu {
-    display: flex;
-    gap: 20px;
   }
 }
 
