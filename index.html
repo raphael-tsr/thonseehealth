@@ -11,25 +11,35 @@
 
 <body>
   <header class="tete">
-        <!-- Icône utilisateur -->
-    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
-  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
-</div>
-    <div class="logo">Thonsee <span>Health</span></div>
-    <!-- Bouton menu burger pour mobile -->
-<div class="menu-toggle" onclick="toggleMobileMenu()">☰</div>
 
-  <!-- Menu principal -->
-  <nav class="menu" id="mainMenu">
-    <a href="index.html">Accueil</a>
-    <a href="produits.html">Nos Produits</a>
-    <a href="contact.html">Contact</a>
-    <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
-    <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
-    <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
-  </nav>
+    <!-- Bouton burger visible sur mobile -->
+    <div class="menu-toggle" onclick="toggleMobileHeader()">☰ Menu</div>
 
+    <!-- Tout le contenu du header dans un conteneur -->
+    <div id="headerContent" class="header-content hidden-on-mobile">
+      
+      <!-- Icône utilisateur -->
+      <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+        <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
+        
+      </div>
+
+      <!-- Logo -->
+      <div class="logo">Thonsee <span>Health</span></div>
+
+      <!-- Menu navigation -->
+      <nav class="menu">
+        <a href="index.html">Accueil</a>
+        <a href="produits.html">Nos Produits</a>
+        <a href="contact.html">Contact</a>
+        <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
+        <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+        <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+      </nav>
+
+    </div>
   </header>
+
 
 
   <main>
@@ -406,6 +416,14 @@ window.addEventListener('DOMContentLoaded', majNotifCommandes);
     registerPopup.classList.toggle('hidden');
   }
 </script>
+
+<script>
+  function toggleMobileHeader() {
+    const headerContent = document.getElementById('headerContent');
+    headerContent.classList.toggle('show-on-mobile');
+  }
+</script>
+
 
 
 </html>

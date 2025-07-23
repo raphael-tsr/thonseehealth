@@ -510,9 +510,74 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
   opacity: 1;
 }
 
+.hidden-on-mobile {
+  display: flex;
+}
+
+/* Bouton menu burger */
+.menu-toggle {
+  display: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #FFD700;
+  padding: 10px;
+}
 
 /* Firefox laisse les flèches visibles par défaut, mais tu peux les styliser un peu */
 /* ----------------------------- VERSION MOBILE ----------------------------- */
+/* Cacher le contenu du header sur mobile (par défaut) */
+
+/* Mobile seulement */
+@media (max-width: 768px) {
+
+  .menu-toggle {
+    display: block;
+    z-index: 2000;
+  }
+
+  .header-content {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #0D0D0D;
+    padding: 20px 0;
+    border-top: 1px solid #FFD700;
+    border-bottom: 1px solid #FFD700;
+    margin-top: 10px;
+  }
+
+  .header-content.show-on-mobile {
+    display: flex;
+  }
+
+  .menu {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .user {
+    position: static;
+    margin: 10px auto;
+  }
+
+  .logo {
+    position: static;
+    text-align: center;
+    margin: 10px auto;
+    font-size: 20px;
+  }
+}
+
+
+
 /* Version mobile */
 @media (max-width: 768px) {
   .menu {
