@@ -520,12 +520,12 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
   }
 
   .tete {
-    height: 120px; !important;
+    height: 150px; !important;
   }
   
   .menu, .menu1 {
     width: 100%;
-    margin: 0;
+    margin-top: 50px;
     text-align: center;
   }
 
