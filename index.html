@@ -12,33 +12,34 @@
 <body>
   <header class="tete">
 
-    <!-- Bouton burger visible sur mobile -->
-    <div class="menu-toggle" onclick="toggleMobileHeader()">☰ Menu</div>
+  <!-- Bouton burger visible uniquement sur mobile -->
+  <div class="menu-toggle" onclick="toggleMobileHeader()">☰ Menu</div>
 
-    <!-- Tout le contenu du header dans un conteneur -->
-    <div id="headerContent" class="header-content hidden-on-mobile">
+  <!-- Contenu du header qui se cache/affiche -->
+  <div id="headerContent" class="header-content">
+
+    <!-- Icône utilisateur -->
+    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+      <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
       
-      <!-- Icône utilisateur -->
-      <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
-        <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
-        
-      </div>
-
-      <!-- Logo -->
-      <div class="logo">Thonsee <span>Health</span></div>
-
-      <!-- Menu navigation -->
-      <nav class="menu">
-        <a href="index.html">Accueil</a>
-        <a href="produits.html">Nos Produits</a>
-        <a href="contact.html">Contact</a>
-        <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
-        <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
-        <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
-      </nav>
-
     </div>
-  </header>
+
+    <!-- Logo -->
+    <div class="logo">Thonsee <span>Health</span></div>
+
+    <!-- Menu de navigation -->
+    <nav class="menu">
+      <a href="index.html">Accueil</a>
+      <a href="produits.html">Nos Produits</a>
+      <a href="contact.html">Contact</a>
+      <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
+      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+    </nav>
+
+  </div>
+</header>
+
 
 
 
@@ -419,10 +420,11 @@ window.addEventListener('DOMContentLoaded', majNotifCommandes);
 
 <script>
   function toggleMobileHeader() {
-    const headerContent = document.getElementById('headerContent');
-    headerContent.classList.toggle('show-on-mobile');
+    const header = document.getElementById('headerContent');
+    header.classList.toggle('show-on-mobile');
   }
 </script>
+
 
 
 
