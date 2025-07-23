@@ -254,8 +254,8 @@ footer {
 /* Style du header (si pas déjà présent) */
 .tete {
   position: relative;
-  height: 60px; /* ou autre valeur selon ton design */
-  background-color: #333; /* par exemple */
+  height: 60px; /* version desktop */
+  background-color: #333;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -520,13 +520,7 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
   }
 
   .tete {
-  position: relative;
-  height: 120px; /* ou autre valeur selon ton design */
-  background-color: #333; /* par exemple */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
+    height: 120px; !important;
   }
   
   .menu, .menu1 {
