@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,8 +8,114 @@
   <link rel="stylesheet" href="style.css" />
   <script defer src="compte.js"></script>
 </head>
+
+<style>
+
+/* Titre principal */
+.titre {
+  text-align: center;
+  font-size: 36px;
+  color: #FFD700;
+  margin-top: 60px;
+}
+
+/* Texte principal */
+main.fade-in {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Bouton d'action */
+.cta {
+  display: inline-block;
+  background-color: #FFD700;
+  color: #0D0D0D;
+  padding: 12px 24px;
+  margin-top: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.cta:hover {
+  background-color: #e6c200;
+}
+
+/* Section PayPal */
+.paypal-section {
+  text-align: center;
+  margin: 60px 20px;
+  border-top: 1px solid #FFD700;
+  padding-top: 40px;
+}
+
+.paypal-section h2 {
+  color: #FFD700;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.paypal-qr {
+  max-width: 220px;
+  width: 90%;
+  height: auto;
+  max-height: 300px;
+  margin: 20px 0;
+  border: 3px solid #FFD700;
+  border-radius: 10px;
+}
+
+/* Lien PayPal */
+.paypal-section a {
+  color: #FFD700;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* Pied de page */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #0D0D0D;
+  border-top: 1px solid #FFD700;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  header.tete {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .menu {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .titre {
+    font-size: 28px;
+  }
+
+  .cta {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .paypal-section {
+    margin: 40px 10px;
+  }
+}
+
+
+</style>
+
 <body>
-  <header class="tete">
+<header class="tete">
        <!-- Icône utilisateur -->
     <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
   <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
@@ -24,17 +131,31 @@
       <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
     </nav>
   </header>
-  <main>
+
+  <section class="texte">
+  <main class="fade-in">
     <h1 class="titre">Contactez-nous</h1>
     <p>Utilisez le formulaire ou nos coordonnées pour toute question.</p>
-    <button class="bouton" onclick="window.location.href='https://www.godaddy.com/fr/domainsearch/find?domainToCheck=thonseehealth.com'">
-  Si vous êtes intéressé
-</button>
-
+    <a href="https://www.godaddy.com/fr/domainsearch/find?domainToCheck=thonseehealth.com" class="cta">Acheter ce site</a>
   </main>
+
+  <section class="paypal-section">
+    <h2>Paiement sécurisé via PayPal</h2>
+    <img src="paypal (1).png" alt="QR Code PayPal" class="paypal-qr">
+    <p>
+      Ou cliquez ici :
+      <a href="https://www.paypal.me" target="_blank">payer via PayPal</a>
+    </p>
+  </section>
+  </section>
+
   <footer>
     <p>&copy; 2025 Thonsee Health. Tous droits réservés.</p>
   </footer>
+
+  <!-- Popups inchangés -->
+  <!-- ... tous les <div> et <script> de ton ancien code restent ici sans modification ... -->
+
   <div id="accountPopup" class="popup hidden">
     <div class="popup-content">
       <span class="close-btn" onclick="togglePopup()">&times;</span>
