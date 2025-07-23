@@ -11,36 +11,25 @@
 
 <body>
   <header class="tete">
-
-  <!-- Bouton burger visible uniquement sur mobile -->
-  <div class="menu-toggle" onclick="toggleMobileHeader()">☰ Menu</div>
-
-  <!-- Contenu du header qui se cache/affiche -->
-  <div id="headerContent" class="header-content">
-
-    <!-- Icône utilisateur -->
+        <!-- Icône utilisateur -->
     <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
-      <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
-      
-    </div>
-
-    <!-- Logo -->
+  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
+</div>
     <div class="logo">Thonsee <span>Health</span></div>
+    <!-- Bouton menu burger pour mobile -->
+<div class="menu-toggle" onclick="toggleMobileMenu()">☰</div>
 
-    <!-- Menu de navigation -->
-    <nav class="menu">
-      <a href="index.html">Accueil</a>
-      <a href="produits.html">Nos Produits</a>
-      <a href="contact.html">Contact</a>
-      <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
-      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
-      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
-    </nav>
+  <!-- Menu principal -->
+  <nav class="menu" id="mainMenu">
+    <a href="index.html">Accueil</a>
+    <a href="produits.html">Nos Produits</a>
+    <a href="contact.html">Contact</a>
+    <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
+    <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
+    <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+  </nav>
 
-  </div>
-</header>
-
-
+  </header>
 
 
   <main>
@@ -318,6 +307,7 @@ window.addEventListener('DOMContentLoaded', majNotifCommandes);
   // === Formulaire Inscription ===
   const usernameInput = document.getElementById('registerUsername');
   const passwordInput = document.getElementById('registerPassword');
+  const registerMessage = document.getElementById('registerMessage');
 
   if (usernameInput && passwordInput && registerMessage) {
     usernameInput.addEventListener('input', () => {
@@ -370,62 +360,6 @@ window.addEventListener('DOMContentLoaded', majNotifCommandes);
 
 
 </script>
-
-<!-- fermerture de le pop up d'inscrition -->
-
-<script>
-  // Ferme la popup d'inscription après inscription réussie
-  const registerForm = document.getElementById('registerForm');
-  const registerPopup = document.getElementById('registerPopup');
-  const registerMessage = document.getElementById('registerMessage');
-
-  if (registerForm) {
-    registerForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const username = document.getElementById('registerUsername').value.trim();
-      const password = document.getElementById('registerPassword').value.trim();
-
-      // Vérifie que le formulaire est valide (ou ajoute tes conditions ici)
-      if (username && password) {
-        // Enregistre dans le localStorage
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userExists = users.some(user => user.username === username);
-
-        if (userExists) {
-          registerMessage.textContent = "Ce nom d'utilisateur existe déjà.";
-        } else {
-          users.push({ username, password });
-          localStorage.setItem('users', JSON.stringify(users));
-          localStorage.setItem('currentUser', username);
-
-          registerMessage.textContent = "Compte créé avec succès !";
-
-          // Ferme la popup après un court délai (facultatif)
-          setTimeout(() => {
-            toggleRegisterPopup(); // Ferme la pop-up
-            registerForm.reset();  // Réinitialise le formulaire
-            registerMessage.textContent = ""; // Vide le message
-          }, 1000);
-        }
-      }
-    });
-  }
-
-  // Fonction pour ouvrir/fermer la popup
-  function toggleRegisterPopup() {
-    registerPopup.classList.toggle('hidden');
-  }
-</script>
-
-<script>
-  function toggleMobileHeader() {
-    const header = document.getElementById('headerContent');
-    header.classList.toggle('show-on-mobile');
-  }
-</script>
-
-
 
 
 </html>

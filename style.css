@@ -427,7 +427,10 @@ section p {
   border:none; 
   border-radius:5px; 
   cursor:pointer;
-  margin-left: 850px;
+}
+
+.main {
+  text-align: center;
 }
 
     #cartCountNav {
@@ -443,10 +446,14 @@ section p {
     }
     table {
       width: 1000px;
-      margin-left: 450px;
       border-collapse: collapse;
       margin-top: 20px;
+
+      /* Centrage horizontal */
+      margin-left: auto;
+      margin-right: auto;
     }
+
     th, td {
       padding: 10px;
       border: 1px solid #3f3d3d;
