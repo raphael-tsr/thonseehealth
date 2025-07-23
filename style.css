@@ -510,3 +510,139 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
 }
 
 /* Firefox laisse les flèches visibles par défaut, mais tu peux les styliser un peu */
+/* ----------------------------- VERSION MOBILE ----------------------------- */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .menu, .menu1 {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+  }
+
+  .logo, .logo1 {
+    font-size: 20px;
+    margin: 0 auto;
+    position: static;
+    text-align: center;
+  }
+
+  nav a {
+    display: block;
+    margin: 5px 0;
+    text-align: center;
+  }
+
+  .produits-container {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .produit {
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .popup-content {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .popup-content input {
+    width: 100%;
+  }
+
+  .popup-toggle {
+    top: 10px;
+    right: 10px;
+  }
+
+  .user {
+    top: 10px;
+    right: 10px;
+    transform: none;
+    width: auto;
+    height: auto;
+  }
+
+  .commande {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  #cartCountNav {
+    top: -5px;
+    left: -5px;
+  }
+
+  table {
+    width: 100%;
+    margin: 20px 0;
+    margin-left: 0;
+    font-size: 14px;
+    overflow-x: auto;
+    display: block;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  td input[type="number"] {
+    width: 60px;
+    font-size: 14px;
+  }
+
+  section {
+    padding: 30px 10px;
+    width: 100%;
+  }
+
+  section h2 {
+    font-size: 1.8rem;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  section p {
+    font-size: 1rem;
+    padding: 0 5px;
+    text-align: center;
+  }
+
+  .titre, .titre1 {
+    width: 100%;
+    font-size: 20px;
+    margin: 0 auto;
+  }
+
+  .slogan {
+    padding: 30px 10px;
+  }
+
+  .slogan1 {
+    font-size: 1.1rem;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .bouton {
+    margin: 1rem auto;
+    display: block;
+    width: 80%;
+  }
+
+  .user-icon {
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+  }
+}
