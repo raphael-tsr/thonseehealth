@@ -400,6 +400,7 @@ section p {
 /* Sur mobile on centre un peu tout sauf le titre */
 
 @media (max-width: 767px) {
+  
   section {
     flex-direction: column;
   }
@@ -518,6 +519,9 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
     gap: 10px;
   }
 
+  .tête {
+    height: 100px;
+  
   .menu, .menu1 {
     width: 100%;
     margin: 0;
