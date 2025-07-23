@@ -122,6 +122,7 @@
     <p><strong>Paramètres</strong></p>
 
     <button id="deleteAccountBtn">Suppression de compte actuel</button><br />
+    <button id="logoutBtn">Se déconnecter</button>
     <button onclick="toggleAccountsPopup()">Gérer mes comptes</button><br />
     <button onclick="window.location.href='commande.html'">Mes commandes</button>
   </div>
@@ -249,6 +250,16 @@
         afficherComptes();
       }
     }
+
+    // Déconnexion
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  if (confirm("Souhaitez-vous vous déconnecter ?")) {
+    localStorage.removeItem("currentUser");
+    alert("Déconnecté avec succès.");
+    location.reload();
+  }
+});
+
   </script>
 
 </body>

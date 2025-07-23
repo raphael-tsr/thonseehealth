@@ -229,49 +229,111 @@
 <!-- fermerture de le pop up d'inscrition -->
 
 <script>
-  // Ferme la popup d'inscription après inscription réussie
-  const registerForm = document.getElementById('registerForm');
-  const registerPopup = document.getElementById('registerPopup');
-  const registerMessage = document.getElementById('registerMessage');
-
-  if (registerForm) {
-    registerForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const username = document.getElementById('registerUsername').value.trim();
-      const password = document.getElementById('registerPassword').value.trim();
-
-      // Vérifie que le formulaire est valide (ou ajoute tes conditions ici)
-      if (username && password) {
-        // Enregistre dans le localStorage
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userExists = users.some(user => user.username === username);
-
-        if (userExists) {
-          registerMessage.textContent = "Ce nom d'utilisateur existe déjà.";
-        } else {
-          users.push({ username, password });
-          localStorage.setItem('users', JSON.stringify(users));
-          localStorage.setItem('currentUser', username);
-
-          registerMessage.textContent = "Compte créé avec succès !";
-
-          // Ferme la popup après un court délai (facultatif)
-          setTimeout(() => {
-            toggleRegisterPopup(); // Ferme la pop-up
-            registerForm.reset();  // Réinitialise le formulaire
-            registerMessage.textContent = ""; // Vide le message
-          }, 1000);
-        }
-      }
-    });
+  function toggleRegisterPopup() {
+    const popup = document.getElementById("registerPopup");
+    popup.classList.toggle("hidden");
   }
 
+  document.addEventListener("DOMContentLoaded", function () {
+    const registerForm = document.getElementById('registerForm');
+    const registerMessage = document.getElementById('registerMessage');
+
+    if (registerForm) {
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const username = document.getElementById('registerUsername').value.trim();
+        const password = document.getElementById('registerPassword').value.trim();
+
+        if (username && password) {
+          let users = JSON.parse(localStorage.getItem('users')) || [];
+          const userExists = users.some(user => user.username === username);
+
+          if (userExists) {
+            registerMessage.textContent = "Ce nom d'utilisateur existe déjà.";
+          } else {
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', username);
+
+            registerMessage.textContent = "Compte créé avec succès !";
+
+            setTimeout(() => {
+              console.log("Fermeture de la pop-up dans 1s...");
+              toggleRegisterPopup();  // ferme la pop-up
+              registerForm.reset();  // réinitialise le formulaire
+              registerMessage.textContent = ""; // vide le message
+            }, 1000);
+
+          }
+        }
+      });
+    }
+  });
+
+  console.log("Fermeture de la pop-up dans 1s...");
+
+</script>
+
+
+<script>
   // Fonction pour ouvrir/fermer la popup
   function toggleRegisterPopup() {
     registerPopup.classList.toggle('hidden');
   }
 </script>
+
+<script>
+  const loginForm = document.getElementById("loginForm");
+  const loginMessage = document.getElementById("loginMessage");
+
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+
+    if (accounts[username] && accounts[username] === password) {
+      localStorage.setItem("currentUser", username);
+      loginMessage.textContent = "Connexion réussie !";
+      loginMessage.style.color = "lightgreen";
+
+      // Ferme la popup après 500ms
+      setTimeout(() => {
+        document.getElementById("loginPopup").classList.add("hidden");
+        loginMessage.textContent = "";
+        loginForm.reset();
+        location.reload(); // recharge la page ou redirige si tu veux
+      }, 500);
+    } else {
+      loginMessage.textContent = "Nom d'utilisateur ou mot de passe incorrect.";
+      loginMessage.style.color = "red";
+    }
+  });
+
+  const loginPopup = document.getElementById("loginPopup");
+
+  // Fermer la popup en cliquant à l'extérieur
+  window.addEventListener("click", function (event) {
+    if (event.target === loginPopup) {
+      loginPopup.classList.add("hidden");
+      document.getElementById("loginForm").reset();
+      document.getElementById("loginMessage").textContent = "";
+    }
+  });
+
+
+  // Fermer la popup d'inscription en cliquant à l'extérieur
+  window.addEventListener("click", function (event) {
+    if (event.target === registerPopup) {
+      registerPopup.classList.add("hidden");
+      document.getElementById("registerForm").reset();
+      document.getElementById("registerMessage").textContent = "";
+    }
+  });
+</script>
+
 
 
 </body>

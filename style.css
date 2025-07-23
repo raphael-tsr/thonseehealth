@@ -224,6 +224,11 @@ footer {
 
 /* --------------------------------------------ACCUEIL */
 
+.hidden {
+  display: none;
+  
+}
+
 .menu {
   width: 600px;
   text-align: center;

@@ -58,5 +58,17 @@
       }
     ],
     "date": "2025-07-23T13:33:08.292Z"
+  },
+  {
+    "utilisateur": "test",
+    "panier": [
+      {
+        "nom": "Omega-3 Élégance",
+        "prix": 24.99,
+        "quantite": 1,
+        "imageUrl": "https://thonseehealth.com/Omega-3_%C3%89l%C3%A9gance-removebg-preview.png"
+      }
+    ],
+    "date": "2025-07-23T14:48:22.756Z"
   }
 ]

@@ -226,6 +226,58 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 </script>
 
+<script>
+  const loginForm = document.getElementById("loginForm");
+  const loginMessage = document.getElementById("loginMessage");
+
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+
+    if (accounts[username] && accounts[username] === password) {
+      localStorage.setItem("currentUser", username);
+      loginMessage.textContent = "Connexion réussie !";
+      loginMessage.style.color = "lightgreen";
+
+      // Ferme la popup après 500ms
+      setTimeout(() => {
+        document.getElementById("loginPopup").classList.add("hidden");
+        loginMessage.textContent = "";
+        loginForm.reset();
+        location.reload(); // recharge la page ou redirige si tu veux
+      }, 500);
+    } else {
+      loginMessage.textContent = "Nom d'utilisateur ou mot de passe incorrect.";
+      loginMessage.style.color = "red";
+    }
+  });
+
+  const loginPopup = document.getElementById("loginPopup");
+
+  // Fermer la popup en cliquant à l'extérieur
+  window.addEventListener("click", function (event) {
+    if (event.target === loginPopup) {
+      loginPopup.classList.add("hidden");
+      document.getElementById("loginForm").reset();
+      document.getElementById("loginMessage").textContent = "";
+    }
+  });
+
+
+  // Fermer la popup d'inscription en cliquant à l'extérieur
+  window.addEventListener("click", function (event) {
+    if (event.target === registerPopup) {
+      registerPopup.classList.add("hidden");
+      document.getElementById("registerForm").reset();
+      document.getElementById("registerMessage").textContent = "";
+    }
+  });
+</script>
+
+
 
 
 </body>

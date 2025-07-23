@@ -254,3 +254,24 @@ function updatePopupUserName() {
 
 // inscription fermeture de la pop up 
 
+// connexion 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userData = JSON.parse(localStorage.getItem("utilisateurConnecté"));
+
+  if (userData) {
+    // Si connecté mais profil pas encore créé
+    if (!userData.createdProfile) {
+      console.log("Profil non complété. Déconnexion...");
+      localStorage.removeItem("utilisateurConnecté");
+
+      // Mise à jour UI (si tu affiches 👤 ou "Se connecter")
+      if (document.getElementById("userIcon")) {
+        document.getElementById("userIcon").innerText = "👤";
+      }
+
+      // Tu peux aussi rediriger vers une page de connexion si besoin :
+      // window.location.href = "login.html";
+    }
+  }
+});
