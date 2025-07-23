@@ -519,8 +519,15 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
     gap: 10px;
   }
 
-  .tête {
-    height: 100px;
+  .tete {
+  position: relative;
+  height: 120px; /* ou autre valeur selon ton design */
+  background-color: #333; /* par exemple */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  }
   
   .menu, .menu1 {
     width: 100%;
