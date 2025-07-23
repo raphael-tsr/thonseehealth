@@ -545,6 +545,9 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
     border-top: 1px solid #FFD700;
     border-bottom: 1px solid #FFD700;
     margin-top: 10px;
+
+    /* Décalage vers la gauche */
+    margin-left: -40px;
   }
 
   .header-content.show-on-mobile {
@@ -575,6 +578,7 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
     font-size: 20px;
   }
 }
+
 
 
 
