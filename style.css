@@ -551,7 +551,7 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
     margin-top: 10px;
 
     /* Décalage vers la gauche */
-    transform: translateX(-40px);
+    transform: translateX(-60px);
   }
 
   .header-content.show-on-mobile {
