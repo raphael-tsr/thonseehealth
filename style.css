@@ -510,8 +510,37 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
   opacity: 1;
 }
 
+
 /* Firefox laisse les flèches visibles par défaut, mais tu peux les styliser un peu */
 /* ----------------------------- VERSION MOBILE ----------------------------- */
+/* Version mobile */
+@media (max-width: 768px) {
+  .menu {
+    display: none;
+    flex-direction: column;
+    background-color: #000; /* ou la couleur de ton header */
+    position: absolute;
+    top: 60px; /* ajuste si nécessaire */
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px 0;
+  }
+
+  .menu.show {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 1100;
+  }
+}
+
+
 @media screen and (max-width: 768px) {
   header {
     flex-direction: column;
@@ -520,7 +549,7 @@ td input[type="number"]:hover::-webkit-outer-spin-button {
   }
 
   .tete {
-    height: 150px; !important;
+    height: 150px;  /* !important; */
   }
   
   .menu, .menu1 {

@@ -12,7 +12,7 @@
        <!-- Icône utilisateur -->
     <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
   <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
-  <a class="text-decoration" href="parametre.html"><div class="nomUser" id="userName" style="font-weight:bold; margin-left:5px;"></div></a>
+  
 </div>
     <div class="logo">Thonsee <span>Health</span></div>
     <nav class="menu">
@@ -177,6 +177,53 @@ window.addEventListener('DOMContentLoaded', () => {
   updateCartCount();
   afficherNomUtilisateur();
 });
+</script>
+
+<!-- fermerture de le pop up d'inscrition -->
+
+<script>
+  // Ferme la popup d'inscription après inscription réussie
+  const registerForm = document.getElementById('registerForm');
+  const registerPopup = document.getElementById('registerPopup');
+  const registerMessage = document.getElementById('registerMessage');
+
+  if (registerForm) {
+    registerForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById('registerUsername').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+
+      // Vérifie que le formulaire est valide (ou ajoute tes conditions ici)
+      if (username && password) {
+        // Enregistre dans le localStorage
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const userExists = users.some(user => user.username === username);
+
+        if (userExists) {
+          registerMessage.textContent = "Ce nom d'utilisateur existe déjà.";
+        } else {
+          users.push({ username, password });
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('currentUser', username);
+
+          registerMessage.textContent = "Compte créé avec succès !";
+
+          // Ferme la popup après un court délai (facultatif)
+          setTimeout(() => {
+            toggleRegisterPopup(); // Ferme la pop-up
+            registerForm.reset();  // Réinitialise le formulaire
+            registerMessage.textContent = ""; // Vide le message
+          }, 1000);
+        }
+      }
+    });
+  }
+
+  // Fonction pour ouvrir/fermer la popup
+  function toggleRegisterPopup() {
+    registerPopup.classList.toggle('hidden');
+  }
 </script>
 
 

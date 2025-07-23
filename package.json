@@ -1,0 +1,16 @@
+{
+  "name": "thonseehealth_site",
+  "version": "1.0.0",
+  "main": "compte.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "description": ""
+}

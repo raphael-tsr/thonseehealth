@@ -250,3 +250,7 @@ window.addEventListener('click', function(event) {
 function updatePopupUserName() {
   const userName = document.getElement
 }
+
+
+// inscription fermeture de la pop up 
+

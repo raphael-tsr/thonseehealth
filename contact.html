@@ -12,7 +12,7 @@
        <!-- Icône utilisateur -->
     <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
   <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
-  <a class="text-decoration" href="parametre.html"><div class="nomUser" id="userName" style="font-weight:bold; margin-left:5px;"></div></a>
+  
 </div>
     <div class="logo">Thonsee <span>Health</span></div>
     <nav class="menu">
@@ -146,5 +146,121 @@ async function majNotifCommandes() {
 
 window.addEventListener('DOMContentLoaded', majNotifCommandes);
 </script>
+
+  <script>
+function ajouterAuPanier(button) {
+  const produitDiv = button.closest('.produit');
+
+  const nom = produitDiv.getAttribute('data-nom');
+  const prix = parseFloat(produitDiv.getAttribute('data-prix'));
+  const imgElem = produitDiv.querySelector('img');
+  const imageUrl = imgElem ? imgElem.src : '';
+
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) {
+    alert("Vous devez être connecté pour ajouter au panier.");
+    return;
+  }
+
+  // Panier spécifique à l'utilisateur
+  let panier = JSON.parse(localStorage.getItem(`cart_${currentUser}`)) || [];
+
+  const produitExistant = panier.find(item => item.nom === nom);
+
+  if (produitExistant) {
+    produitExistant.quantite++;
+  } else {
+    panier.push({ nom: nom, prix: prix, quantite: 1, imageUrl: imageUrl });
+  }
+
+  localStorage.setItem(`cart_${currentUser}`, JSON.stringify(panier));
+
+  updateCartCount();
+  alert(`${nom} a été ajouté au panier !`);
+}
+
+function getCart() {
+  const currentUser = localStorage.getItem('currentUser');
+  if (!currentUser) return [];
+  return JSON.parse(localStorage.getItem(`cart_${currentUser}`)) || [];
+}
+
+function updateCartCount() {
+  const cart = getCart();
+  const totalQuantity = cart.reduce((sum, item) => sum + (item.quantite || 0), 0);
+  const countElem = document.getElementById('cartCountNav');
+  if (!countElem) return;
+
+  if (totalQuantity > 0) {
+    countElem.style.display = 'inline';
+    countElem.textContent = totalQuantity;
+  } else {
+    countElem.style.display = 'none';
+  }
+}
+
+// Affiche le nom d'utilisateur ou "Non connecté"
+function afficherNomUtilisateur() {
+  const currentUser = localStorage.getItem('currentUser');
+  const userNameDiv = document.getElementById('userName');
+
+  if (userNameDiv) {
+    userNameDiv.textContent = currentUser ? currentUser : "Non connecté";
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  updateCartCount();
+  afficherNomUtilisateur();
+});
+</script>
+
+<!-- fermerture de le pop up d'inscrition -->
+
+<script>
+  // Ferme la popup d'inscription après inscription réussie
+  const registerForm = document.getElementById('registerForm');
+  const registerPopup = document.getElementById('registerPopup');
+  const registerMessage = document.getElementById('registerMessage');
+
+  if (registerForm) {
+    registerForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById('registerUsername').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+
+      // Vérifie que le formulaire est valide (ou ajoute tes conditions ici)
+      if (username && password) {
+        // Enregistre dans le localStorage
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const userExists = users.some(user => user.username === username);
+
+        if (userExists) {
+          registerMessage.textContent = "Ce nom d'utilisateur existe déjà.";
+        } else {
+          users.push({ username, password });
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('currentUser', username);
+
+          registerMessage.textContent = "Compte créé avec succès !";
+
+          // Ferme la popup après un court délai (facultatif)
+          setTimeout(() => {
+            toggleRegisterPopup(); // Ferme la pop-up
+            registerForm.reset();  // Réinitialise le formulaire
+            registerMessage.textContent = ""; // Vide le message
+          }, 1000);
+        }
+      }
+    });
+  }
+
+  // Fonction pour ouvrir/fermer la popup
+  function toggleRegisterPopup() {
+    registerPopup.classList.toggle('hidden');
+  }
+</script>
+
 </body>
 </html>
