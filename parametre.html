@@ -117,8 +117,8 @@
 
 <body>
   <div class="account">
-    <h2>Compte de <span id="loginUsername"></span></h2>
-    <p><strong>Mot de passe :</strong> <span id="loginPassword">********</span></p>
+    <h2>Compte de <span id="registerUsername"></span></h2>
+    <p><strong>Mot de passe :</strong> <span id="registerPassword">********</span></p>
 
     <p><strong>Paramètres</strong></p>
 
@@ -141,8 +141,8 @@
     const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
 
     function afficherUtilisateur(user) {
-      document.getElementById("loginUsername").textContent = user;
-      document.getElementById("loginPassword").textContent = accounts[user]?.password || "********";
+      document.getElementById("registerUsername").textContent = user;
+      document.getElementById("registerPassword").textContent = accounts[user]?.password || "********";
     }
 
     if (!currentUser || !accounts[currentUser]) {
