@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,7 +23,6 @@
       margin-bottom: 30px;
     }
 
-    /* Popup comptes */
     #accountsPopup {
       position: fixed;
       top: 50%;
@@ -79,7 +77,6 @@
       background-color: #cc0000;
     }
 
-    /* Liste comptes */
     #accountsList li {
       display: flex;
       justify-content: space-between;
@@ -135,15 +132,13 @@
   </div>
 
   <script>
-    // Récupération des comptes et utilisateur courant
+    const connected = JSON.parse(localStorage.getItem("connectedUser"));
+    const currentUser = connected?.email || null;
     const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
-    let currentUser = localStorage.getItem("currentUser");
 
     function afficherUtilisateur(user) {
-      currentUser = user;
-      localStorage.setItem("currentUser", user);
       document.getElementById("usernameDisplay").textContent = user;
-      document.getElementById("passwordDisplay").textContent = accounts[user] || "********";
+      document.getElementById("passwordDisplay").textContent = accounts[user]?.password || "********";
     }
 
     if (!currentUser || !accounts[currentUser]) {
@@ -152,23 +147,21 @@
       afficherUtilisateur(currentUser);
     }
 
-    // Supprimer compte actuel
     document.getElementById("deleteAccountBtn").addEventListener("click", () => {
       if (confirm("Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible.")) {
-        let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
-        const currentUser = localStorage.getItem("currentUser");
+        const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+        const currentUser = JSON.parse(localStorage.getItem("connectedUser"))?.email;
 
         if (currentUser && accounts[currentUser]) {
           delete accounts[currentUser];
           localStorage.setItem("accounts", JSON.stringify(accounts));
-          localStorage.removeItem("currentUser");
+          localStorage.removeItem("connectedUser");
           alert("Compte supprimé avec succès.");
           location.reload();
         }
       }
     });
 
-    // --- Gestion popup comptes ---
     function toggleAccountsPopup() {
       const popup = document.getElementById('accountsPopup');
       if (popup.style.display === 'block') {
@@ -179,13 +172,12 @@
       }
     }
 
-    // Affiche la liste des comptes avec boutons "Supprimer"
     function afficherComptes() {
       const ul = document.getElementById('accountsList');
       ul.innerHTML = '';
 
       const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-      const currentUser = localStorage.getItem('currentUser');
+      const currentUser = JSON.parse(localStorage.getItem('connectedUser'))?.email;
 
       if (Object.keys(accounts).length === 0) {
         const li = document.createElement('li');
@@ -197,7 +189,6 @@
       Object.keys(accounts).forEach(username => {
         const li = document.createElement('li');
 
-        // Texte nom utilisateur, style et clic pour changer de compte
         const nomSpan = document.createElement('span');
         nomSpan.textContent = username + (username === currentUser ? " (actuel)" : "");
         nomSpan.style.fontWeight = username === currentUser ? 'bold' : 'normal';
@@ -209,8 +200,11 @@
           }
           const mdp = prompt(`Entrez le mot de passe pour ${username} :`);
           if (!mdp) return;
-          if (accounts[username] === mdp) {
-            localStorage.setItem('currentUser', username);
+          if (accounts[username].password === mdp) {
+            localStorage.setItem('connectedUser', JSON.stringify({
+              email: username,
+              isAdmin: false
+            }));
             afficherUtilisateur(username);
             toggleAccountsPopup();
             alert(`Connecté en tant que ${username}`);
@@ -219,7 +213,6 @@
           }
         };
 
-        // Bouton supprimer compte
         const btnSupprimer = document.createElement('button');
         btnSupprimer.textContent = 'Supprimer';
         btnSupprimer.onclick = (e) => {
@@ -235,15 +228,14 @@
       });
     }
 
-    // Supprime un compte
     function supprimerCompte(username) {
       const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
       delete accounts[username];
       localStorage.setItem('accounts', JSON.stringify(accounts));
 
-      const currentUser = localStorage.getItem('currentUser');
+      const currentUser = JSON.parse(localStorage.getItem("connectedUser"))?.email;
       if (currentUser === username) {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('connectedUser');
         alert('Vous avez supprimé votre compte actuel. Veuillez vous reconnecter.');
         location.reload();
       } else {
@@ -251,17 +243,13 @@
       }
     }
 
-    // Déconnexion
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  if (confirm("Souhaitez-vous vous déconnecter ?")) {
-    localStorage.removeItem("currentUser");
-    alert("Déconnecté avec succès.");
-    location.reload();
-  }
-});
-
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      if (confirm("Souhaitez-vous vous déconnecter ?")) {
+        localStorage.removeItem("connectedUser");
+        alert("Déconnecté avec succès.");
+        location.reload();
+      }
+    });
   </script>
-
 </body>
-
 </html>

@@ -1,3 +1,68 @@
 [
-  
+  {
+    "utilisateur": "test10",
+    "panier": [
+      {
+        "nom": "Omega-3 Élégance",
+        "prix": 24.99,
+        "quantite": 1,
+        "imageUrl": "http://127.0.0.1:5500/Omega-3_%C3%89l%C3%A9gance-removebg-preview.png"
+      }
+    ],
+    "date": "2025-07-23T18:07:52.745Z"
+  },
+  {
+    "utilisateur": "raphael.teissier6@gmail.com",
+    "panier": [
+      {
+        "nom": "Omega-3 Élégance",
+        "prix": 24.99,
+        "quantite": 1,
+        "imageUrl": "http://127.0.0.1:5500/Omega-3_%C3%89l%C3%A9gance-removebg-preview.png"
+      },
+      {
+        "nom": "Vitamine D Luxe",
+        "prix": 22.99,
+        "quantite": 1,
+        "imageUrl": "http://127.0.0.1:5500/Vitamine_D_Luxe-removebg-preview.png"
+      }
+    ],
+    "date": "2025-07-25T09:02:56.195Z"
+  },
+  {
+    "utilisateur": "raphael.teissier6@gmail.com",
+    "panier": [
+      {
+        "nom": "Omega-3 Élégance",
+        "prix": 24.99,
+        "quantite": 1,
+        "imageUrl": "http://127.0.0.1:5500/Omega-3_%C3%89l%C3%A9gance-removebg-preview.png"
+      }
+    ],
+    "date": "2025-07-25T12:09:55.810Z"
+  },
+  {
+    "utilisateur": "raphael.teissi6@gmail.com",
+    "panier": [
+      {
+        "nom": "Omega-3 Élégance",
+        "prix": 24.99,
+        "quantite": 1,
+        "imageUrl": "http://127.0.0.1:5500/Omega-3_%C3%89l%C3%A9gance-removebg-preview.png"
+      }
+    ],
+    "date": "2025-07-25T12:10:35.578Z"
+  },
+  {
+    "utilisateur": "raphael.teissi6@gmail.com",
+    "panier": [
+      {
+        "nom": "Omega-3 Élégance",
+        "prix": 24.99,
+        "quantite": 1,
+        "imageUrl": "http://127.0.0.1:5500/Omega-3_%C3%89l%C3%A9gance-removebg-preview.png"
+      }
+    ],
+    "date": "2025-07-25T12:19:37.165Z"
+  }
 ]

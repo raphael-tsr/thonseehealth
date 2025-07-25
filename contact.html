@@ -7,6 +7,10 @@
   <title>Contact - Thonsee Health</title>
   <link rel="stylesheet" href="style.css" />
   <script defer src="compte.js"></script>
+  <script defer src="panier.js"></script>
+  <script defer src="auth.js"></script>
+  <script defer src="utilisateur.js"></script>
+  <script defer src="commandes.js"></script>
 </head>
 
 <style>
@@ -127,8 +131,8 @@ footer {
       <a href="produits.html">Nos Produits</a>
       <a href="contact.html">Contact</a>
       <a href="panier.html">Panier <span id="cartCountNav" >0</span></a>
-      <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
-      <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
+      <a href="#" onclick="toggleLoginPopup(); return false;">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup(); return false;">S'inscrire</a>
     </nav>
   </header>
 
@@ -169,67 +173,47 @@ footer {
     </div>
   </div>
 
-<!-- Pop-up Inscription -->
-<div id="registerPopup" class="popup hidden">
-  <div class="popup-content">
-    <span class="close-btn" onclick="toggleRegisterPopup()">&times;</span>
-    <h2>Inscription</h2>
-    <form id="registerForm" autocomplete="on">
-      <input
-        type="text"
-        id="registerUsername"
-        name="username"
-        placeholder="Nom d'utilisateur"
-        maxlength="15"
-        autocomplete="username"
-        required
-      />
-      <input
-        type="password"
-        id="registerPassword"
-        name="password"
-        placeholder="Mot de passe"
-        maxlength="12"
-        autocomplete="new-password"
-        required
-      />
-      <button type="submit">Créer un compte</button>
-    </form>
-    <div id="registerMessage" style="color: rgb(255, 255, 255);"></div>
+ <!-- Popup d'édition (ADMIN) -->
+  <div id="editPopup" class="popup hidden">
+    <div class="popup-content">
+      <h2>Modifier le contenu</h2>
+      <textarea id="editTextarea" rows="6" style="width: 100%;"></textarea>
+      <button onclick="saveEditedText()">Enregistrer</button>
+      <button onclick="closeEditPopup()">Annuler</button>
+    </div>
   </div>
-</div>
 
-<!-- Pop-up Connexion -->
-<div id="loginPopup" class="popup hidden">
-  <div class="popup-content">
-    <span class="close-btn" onclick="toggleLoginPopup()">&times;</span>
-    <h2>Connexion</h2>
-    <form id="loginForm" autocomplete="on">
-      <input
-        list="usernames"
-        type="text"
-        id="loginUsername"
-        name="username"
-        placeholder="Nom d'utilisateur"
-        maxlength="15"
-        autocomplete="username"
-        required
-      />
-      <datalist id="usernames"></datalist>
-      <input
-        type="password"
-        id="loginPassword"
-        name="password"
-        placeholder="Mot de passe"
-        maxlength="12"
-        autocomplete="current-password"
-        required
-      />
+  <!-- POPUP CONNEXION -->
+  <div id="loginPopup" class="popup hidden">
+    <form id="loginForm" class="popup-content">
+      <h2>Connexion</h2>
+      <input type="email" id="loginUsername" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Mot de passe" required />
+      <p id="loginMessage" class="message"></p>
       <button type="submit">Se connecter</button>
+      <button type="button" onclick="toggleLoginPopup()">Fermer</button>
     </form>
-    <div id="loginMessage" style="color: rgb(255, 255, 255);"></div>
   </div>
-</div>
+
+  <!-- POPUP INSCRIPTION -->
+  <div id="registerPopup" class="popup hidden">
+    <form id="registerForm" class="popup-content">
+      <h2>Inscription</h2>
+      <input type="email" id="registerUsername" placeholder="Email" required />
+      <input type="password" id="registerPassword" placeholder="Mot de passe" required />
+      <p id="registerMessage" class="message"></p>
+      <button type="submit">S’inscrire</button>
+      <button type="button" onclick="toggleRegisterPopup()">Fermer</button>
+    </form>
+  </div>
+
+  <script>
+    function toggleLoginPopup() {
+      const loginPopup = document.getElementById("loginPopup");
+      loginPopup.classList.toggle("hidden");
+    }
+  </script>
+
 
   <script>
 
@@ -432,6 +416,53 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById("registerMessage").textContent = "";
     }
   });
+</script>
+
+
+
+<script>
+function enregistrerUtilisateur() {
+  const email = document.getElementById("registerUsername").value.trim();
+  const password = document.getElementById("registerPassword").value.trim();
+  const messageElem = document.getElementById("registerMessage");
+
+  if (!email || !password) {
+    messageElem.textContent = "Veuillez remplir tous les champs.";
+    messageElem.style.color = "red";
+    return;
+  }
+
+  fetch("http://localhost:3000/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        messageElem.textContent = "✅ Compte créé avec succès.";
+        messageElem.style.color = "green";
+
+        // Tu peux stocker le nom pour l’utiliser plus tard
+        localStorage.setItem("userName", email);
+      } else if (data.error) {
+        messageElem.textContent = "❌ " + data.error;
+        messageElem.style.color = "red";
+      }
+    })
+    .catch(error => {
+      console.error("Erreur serveur :", error);
+      messageElem.textContent = "❌ Erreur de communication avec le serveur.";
+      messageElem.style.color = "red";
+    });
+}
+
+// Lier au formulaire d’inscription
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  enregistrerUtilisateur();
+});
+
 </script>
 
 

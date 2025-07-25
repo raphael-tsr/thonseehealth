@@ -1,277 +1,187 @@
-function toggleLoginPopup() {
-  document.getElementById('loginPopup').classList.toggle('hidden');
+// 🔐 Liste des emails admin
+const admins = ["athonseehealth@gmail.com"];
+
+// Ouvrir / fermer les popups connexion / inscription
+window.toggleLoginPopup = function () {
+  const popup = document.getElementById("loginPopup");
+  popup.classList.toggle("hidden");
+  clearLoginMessage();
+};
+
+window.toggleRegisterPopup = function () {
+  const popup = document.getElementById("registerPopup");
+  popup.classList.toggle("hidden");
+  clearRegisterMessage();
+};
+
+// Messages
+function clearLoginMessage() {
+  const msg = document.getElementById("loginMessage");
+  msg.textContent = "";
+  msg.style.color = "";
 }
 
-function toggleRegisterPopup() {
-  document.getElementById('registerPopup').classList.toggle('hidden');
+function clearRegisterMessage() {
+  const msg = document.getElementById("registerMessage");
+  msg.textContent = "";
+  msg.style.color = "";
 }
 
-function afficherUtilisateur(username) {
-  const icon = document.getElementById('userIcon');
-  const name = document.getElementById('userName');
-  const logoutBtn = document.getElementById('logoutBtn');
-  icon.style.display = 'inline';
-  name.style.display = 'inline';
-  name.textContent = username;
-  logoutBtn.style.display = 'inline';
+// Validation simple email
+function isValidEmail(email) {
+  return /\S+@\S+\.\S+/.test(email);
 }
 
-function logout() {
-  localStorage.removeItem('currentUser');
-  document.getElementById('userIcon').style.display = 'none';
-  document.getElementById('userName').style.display = 'none';
-  document.getElementById('logoutBtn').style.display = 'none';
-  document.getElementById('accountsPopup').classList.add('hidden');
-}
-
-// Charger la datalist usernames pour le formulaire login
-function chargerHistoriqueComptes() {
-  const datalist = document.getElementById('usernames');
-  if (!datalist) return;
-  datalist.innerHTML = '';
-
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  Object.keys(accounts).forEach(username => {
-    const option = document.createElement('option');
-    option.value = username;
-    datalist.appendChild(option);
-  });
-}
-
-// Affiche la popup avec tous les comptes enregistrés, bouton supprimer ajouté
-function afficherComptes() {
-  console.log('afficherComptes appelé'); // Debug affichage liste
-
-  const ul = document.getElementById('accountsList');
-  ul.innerHTML = '';
-
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  const currentUser = localStorage.getItem('currentUser');
-
-  if (Object.keys(accounts).length === 0) {
-    const li = document.createElement('li');
-    li.textContent = "Aucun compte enregistré.";
-    ul.appendChild(li);
-    return;
+// 🎯 Afficher email connecté (si présent)
+document.addEventListener("DOMContentLoaded", () => {
+  const span = document.getElementById("utilisateurConnecte");
+  const currentUser = JSON.parse(localStorage.getItem("connectedUser"));
+  if (span && currentUser && currentUser.email) {
+    span.textContent = currentUser.email;
   }
+});
 
-  Object.keys(accounts).forEach(username => {
-    const li = document.createElement('li');
-    li.style.display = 'flex';
-    li.style.justifyContent = 'space-between';
-    li.style.alignItems = 'center';
-    li.style.marginBottom = '6px';
+// ✅ GESTION INSCRIPTION UNIQUE
+const registerForm = document.getElementById("registerForm");
+if (registerForm) {
+  registerForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-    const nomSpan = document.createElement('span');
-    nomSpan.textContent = username + (username === currentUser ? " (actuel)" : "");
-    nomSpan.style.fontWeight = username === currentUser ? 'bold' : 'normal';
-    nomSpan.style.cursor = 'pointer';
-    nomSpan.onclick = () => {
-      if (username === currentUser) {
-        toggleAccountsPopup();
-        return;
-      }
-      const mdp = prompt(`Entrez le mot de passe pour ${username} :`);
-      if (!mdp) return;
-      if (accounts[username] === mdp) {
-        localStorage.setItem('currentUser', username);
-        afficherUtilisateur(username);
-        toggleAccountsPopup();
-        alert(`Connecté en tant que ${username}`);
+    const email = document.getElementById("registerUsername").value.trim();
+    const password = document.getElementById("registerPassword").value;
+    const message = document.getElementById("registerMessage");
+
+    // Validation
+    if (!isValidEmail(email)) {
+      message.textContent = "Email invalide.";
+      message.style.color = "red";
+      return;
+    }
+
+    if (password.length < 6) {
+      message.textContent = "Le mot de passe doit faire au moins 6 caractères.";
+      message.style.color = "red";
+      return;
+    }
+
+    let comptes = JSON.parse(localStorage.getItem("accounts")) || {};
+
+
+
+    // Enregistre dans le localStorage
+    comptes[email] = { password: password };
+    localStorage.setItem("accounts", JSON.stringify(comptes));
+
+    // Vérifie si c'est un admin
+    const isAdmin = admins.includes(email);
+    localStorage.setItem("connectedUser", JSON.stringify({ email, isAdmin }));
+
+    // 🔥 Envoie aussi au serveur
+    fetch("http://localhost:3000/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        message.textContent = "Inscription réussie !";
+        message.style.color = "green";
+        registerForm.reset();
+
+        setTimeout(() => {
+          toggleRegisterPopup();
+          clearRegisterMessage();
+          location.reload();
+        }, 500);
       } else {
-        alert('Mot de passe incorrect.');
+        message.textContent = "Erreur serveur : " + data.error;
+        message.style.color = "red";
       }
-    };
-
-    const btnSupprimer = document.createElement('button');
-    btnSupprimer.textContent = 'Supprimer';
-    btnSupprimer.style.background = 'red';
-    btnSupprimer.style.color = 'white';
-    btnSupprimer.style.border = 'none';
-    btnSupprimer.style.borderRadius = '4px';
-    btnSupprimer.style.cursor = 'pointer';
-    btnSupprimer.style.padding = '2px 6px';
-
-    btnSupprimer.onclick = (e) => {
-      e.stopPropagation(); // éviter que le clic active la connexion
-      console.log('Suppression demandée pour', username); // Debug suppression
-
-      if (confirm(`Supprimer définitivement le compte "${username}" ?`)) {
-        supprimerCompte(username);
-      }
-    };
-
-    li.appendChild(nomSpan);
-    li.appendChild(btnSupprimer);
-    ul.appendChild(li);
+    })
+    .catch(err => {
+      message.textContent = "Erreur de communication avec le serveur.";
+      message.style.color = "red";
+      console.error(err);
+    });
   });
 }
 
-// Supprime un compte et met à jour l'affichage et la session
-function supprimerCompte(username) {
-  console.log('supprimerCompte appelé pour', username); // Debug
+// ✅ GESTION CONNEXION
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  delete accounts[username];
-  localStorage.setItem('accounts', JSON.stringify(accounts));
-  console.log('Accounts après suppression:', accounts); // Debug
+    const email = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const message = document.getElementById("loginMessage");
 
-  const currentUser = localStorage.getItem('currentUser');
-  if (currentUser === username) {
-    logout();
-  }
-
-  afficherComptes();
-}
-
-// Connexion
-document.getElementById('loginForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const username = document.getElementById('loginUsername').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-
-  if (accounts[username]) {
-    if (accounts[username] === password) {
-      localStorage.setItem('currentUser', username);
-      afficherUtilisateur(username);
-      document.getElementById('loginMessage').textContent = `Bienvenue ${username} !`;
-      setTimeout(() => toggleLoginPopup(), 1000);
-    } else {
-      document.getElementById('loginMessage').textContent = "Mot de passe incorrect.";
+    if (!isValidEmail(email)) {
+      message.textContent = "Email invalide.";
+      message.style.color = "red";
+      return;
     }
-  } else {
-    document.getElementById('loginMessage').textContent = "Compte inexistant.";
-  }
-  document.getElementById('loginForm').reset();
-});
 
-// Inscription
-document.getElementById('registerForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const username = document.getElementById('registerUsername').value.trim();
-  const password = document.getElementById('registerPassword').value.trim();
-  let accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-
-  if (accounts[username]) {
-    document.getElementById('registerMessage').textContent = "Nom d'utilisateur déjà utilisé.";
-  } else {
-    accounts[username] = password;
-    localStorage.setItem('accounts', JSON.stringify(accounts));
-    localStorage.setItem('currentUser', username);
-    afficherUtilisateur(username);
-    document.getElementById('registerMessage').textContent = `Compte créé avec succès !`;
-    setTimeout(() => toggleRegisterPopup(), 1000);
-  }
-  document.getElementById('registerForm').reset();
-});
-
-// Au chargement de la page, afficher utilisateur s'il est connecté
-window.addEventListener('DOMContentLoaded', () => {
-  const currentUser = localStorage.getItem('currentUser');
-  if (currentUser) afficherUtilisateur(currentUser);
-});
-
-// Ouvrir la liste des comptes au clic sur l'icône ou nom utilisateur
-document.getElementById('userIcon').addEventListener('click', () => {
-  toggleAccountsPopup();
-});
-document.getElementById('userName').addEventListener('click', () => {
-  toggleAccountsPopup();
-});
-
-// Fonction pour préremplir le formulaire loginPopup et connecter directement si compte existant
-function autoConnect(username) {
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  if (accounts[username]) {
-    // Préremplir les champs
-    document.getElementById('loginUsername').value = username;
-    document.getElementById('loginPassword').value = accounts[username]; // mot de passe sauvegardé en clair (attention !)
-    // Lancer connexion automatiquement
-    connecter(username, accounts[username]);
-  }
-}
-
-// Fonction connexion (extrait du submit)
-function connecter(username, password) {
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  if (accounts[username]) {
-    if (accounts[username] === password) {
-      localStorage.setItem('currentUser', username);
-      afficherUtilisateur(username);
-      document.getElementById('loginMessage').textContent = `Bienvenue ${username} !`;
-      setTimeout(() => toggleLoginPopup(), 1000);
-    } else {
-      document.getElementById('loginMessage').textContent = "Mot de passe incorrect.";
+    if (password.length < 6) {
+      message.textContent = "Mot de passe invalide.";
+      message.style.color = "red";
+      return;
     }
-  } else {
-    document.getElementById('loginMessage').textContent = "Compte inexistant.";
-  }
-}
 
-// Remplir la datalist avec les comptes existants
-function chargerHistoriqueComptesLogin() {
-  const datalist = document.getElementById('usernamesLogin');
-  datalist.innerHTML = ''; // reset
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  Object.keys(accounts).forEach(username => {
-    const option = document.createElement('option');
-    option.value = username;
-    datalist.appendChild(option);
+    let comptes = JSON.parse(localStorage.getItem("accounts")) || {};
+
+    if (!comptes[email]) {
+      message.textContent = "Compte non trouvé.";
+      message.style.color = "red";
+      return;
+    }
+
+    if (comptes[email].password !== password) {
+      message.textContent = "Mot de passe incorrect.";
+      message.style.color = "red";
+      return;
+    }
+
+    // Connexion réussie
+    const isAdmin = admins.includes(email);
+    localStorage.setItem("connectedUser", JSON.stringify({ email, isAdmin }));
+    loginForm.reset();
+
+    setTimeout(() => {
+      toggleLoginPopup();
+      clearLoginMessage();
+      location.reload();
+    }, 500);
   });
 }
-
-// Quand on change le champ utilisateur dans loginPopup, si correspondance, auto-connect
-document.getElementById('loginUsername').addEventListener('input', (e) => {
-  const username = e.target.value.trim();
-  const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-  if (accounts[username]) {
-    autoConnect(username);
-  }
-});
-
-// Au chargement, remplir datalist
-window.addEventListener('DOMContentLoaded', () => {
-  chargerHistoriqueComptesLogin();
-});
-
-// --- Fermeture popup comptes si clic en dehors ---
-window.addEventListener('click', function(event) {
-  const popup = document.getElementById('accountsPopup');
-  if (!popup.classList.contains('hidden')) {
-    // Si clic en dehors de la popup ET pas sur userIcon/userName qui ouvrent la popup
-    if (!popup.contains(event.target) && !event.target.matches('#userIcon, #userName')) {
-      popup.classList.add('hidden');
-    }
-  }
-});
-
-// pop up user 
-function updatePopupUserName() {
-  const userName = document.getElement
-}
-
-
-// inscription fermeture de la pop up 
-
-// connexion 
 
 document.addEventListener("DOMContentLoaded", () => {
-  const userData = JSON.parse(localStorage.getItem("utilisateurConnecté"));
+  const span = document.getElementById("utilisateurConnecte");
+  const currentUser = JSON.parse(localStorage.getItem("connectedUser"));
 
-  if (userData) {
-    // Si connecté mais profil pas encore créé
-    if (!userData.createdProfile) {
-      console.log("Profil non complété. Déconnexion...");
-      localStorage.removeItem("utilisateurConnecté");
-
-      // Mise à jour UI (si tu affiches 👤 ou "Se connecter")
-      if (document.getElementById("userIcon")) {
-        document.getElementById("userIcon").innerText = "👤";
-      }
-
-      // Tu peux aussi rediriger vers une page de connexion si besoin :
-      // window.location.href = "login.html";
-    }
+  if (span && currentUser?.email) {
+    span.textContent = currentUser.email;
   }
+
+  // ✅ Affiche les éléments admin si c'est un admin
+  const isAdmin = currentUser?.isAdmin;
+  const adminElements = document.querySelectorAll(".admin-only");
+
+  adminElements.forEach(el => {
+    if (isAdmin) {
+      el.classList.remove("hidden");
+    } else {
+      el.classList.add("hidden");
+    }
+  });
 });
+
+
+
+
+
+
+

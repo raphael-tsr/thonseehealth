@@ -7,30 +7,39 @@
   <title>Thonsee Health - Accueil</title>
   <link rel="stylesheet" href="style.css" />
   <script defer src="compte.js"></script>
+  <script defer src="panier.js"></script>
+  <script defer src="utilisateur.js"></script>
+  <script defer src="commandes.js"></script>
 </head>
 
 <body>
+
   <header class="tete">
-        <!-- Icône utilisateur -->
+    <!-- Icône utilisateur -->
     <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
-  <a class="text-decoration" href="parametre.html"><div id="userIcon">👤</div></a>
-</div>
+      <a class="text-decoration" href="parametre.html">
+        <div id="userIcon">👤</div>
+      </a>
+    </div>
+
     <div class="logo">Thonsee <span>Health</span></div>
+
     <!-- Bouton menu burger pour mobile -->
-<div class="menu-toggle" onclick="toggleMobileMenu()">☰</div>
+    <div class="menu-toggle" onclick="toggleMobileMenu()">☰</div>
 
-  <!-- Menu principal -->
-  <nav class="menu" id="mainMenu">
-    <a href="index.html">Accueil</a>
-    <a href="produits.html">Nos Produits</a>
-    <a href="contact.html">Contact</a>
-    <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
-    <a href="#" onclick="toggleLoginPopup()">Se connecter</a>
-    <a href="#" onclick="toggleRegisterPopup()">S'inscrire</a>
-  </nav>
+    <!-- Menu principal -->
+    <nav class="menu" id="mainMenu">
+      <a href="index.html">Accueil</a>
+      <a href="produits.html">Nos Produits</a>
+      <a href="contact.html">Contact</a>
+      <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
+      <a href="#" onclick="toggleLoginPopup(); return false;">Se connecter</a>
+      <a href="#" onclick="toggleRegisterPopup(); return false;">S'inscrire</a>
 
+      <!-- Lien vers la page Admin (invisible par défaut) -->
+      <a href="admin.html" id="adminLink" style="display: none; color: gold;">Admin</a>
+    </nav>
   </header>
-
 
   <main>
     <!-- Section Accueil -->
@@ -134,264 +143,231 @@
     <p>&copy; 2025 Thonsee Health. Tous droits réservés.</p>
   </footer>
 
-<!-- Pop-up Inscription -->
-<div id="registerPopup" class="popup hidden">
-  <div class="popup-content">
-    <span class="close-btn" onclick="toggleRegisterPopup()">&times;</span>
-    <h2>Inscription</h2>
-    <form id="registerForm" autocomplete="on">
-      <input
-        type="text"
-        id="registerUsername"
-        name="username"
-        placeholder="Nom d'utilisateur"
-        maxlength="15"
-        autocomplete="username"
-        required
-      />
-      <input
-        type="password"
-        id="registerPassword"
-        name="password"
-        placeholder="Mot de passe"
-        maxlength="12"
-        autocomplete="new-password"
-        required
-      />
-      <button type="submit">Créer un compte</button>
-    </form>
-    <div id="registerMessage" style="color: rgb(255, 255, 255);"></div>
+  <!-- Popup d'édition (ADMIN) -->
+  <div id="editPopup" class="popup hidden">
+    <div class="popup-content">
+      <h2>Modifier le contenu</h2>
+      <textarea id="editTextarea" rows="6" style="width: 100%;"></textarea>
+      <button onclick="saveEditedText()">Enregistrer</button>
+      <button onclick="closeEditPopup()">Annuler</button>
+    </div>
   </div>
-</div>
 
-<!-- Pop-up Connexion -->
-<div id="loginPopup" class="popup hidden">
-  <div class="popup-content">
-    <span class="close-btn" onclick="toggleLoginPopup()">&times;</span>
-    <h2>Connexion</h2>
-    <form id="loginForm" autocomplete="on">
-      <input
-        list="usernames"
-        type="text"
-        id="loginUsername"
-        name="username"
-        placeholder="Nom d'utilisateur"
-        maxlength="15"
-        autocomplete="username"
-        required
-      />
-      <datalist id="usernames"></datalist>
-      <input
-        type="password"
-        id="loginPassword"
-        name="password"
-        placeholder="Mot de passe"
-        maxlength="12"
-        autocomplete="current-password"
-        required
-      />
+  <!-- POPUP CONNEXION -->
+  <div id="loginPopup" class="popup hidden">
+    <form id="loginForm" class="popup-content">
+      <h2>Connexion</h2>
+      <input type="email" id="loginUsername" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Mot de passe" required />
+      <p id="loginMessage" class="message"></p>
       <button type="submit">Se connecter</button>
+      <button type="button" onclick="toggleLoginPopup()">Fermer</button>
     </form>
-    <div id="loginMessage" style="color: rgb(255, 255, 255);"></div>
   </div>
-</div>
 
-</body>
+  <!-- POPUP INSCRIPTION -->
+  <div id="registerPopup" class="popup hidden">
+    <form id="registerForm" class="popup-content">
+      <h2>Inscription</h2>
+      <input type="email" id="registerUsername" placeholder="Email" required />
+      <input type="password" id="registerPassword" placeholder="Mot de passe" required />
+      <p id="registerMessage" class="message"></p>
+      <button type="submit">S’inscrire</button>
+      <button type="button" onclick="toggleRegisterPopup()">Fermer</button>
+    </form>
+  </div>
 
+
+  <!-- Script gestion édition du contenu (admin only) -->
   <script>
-function ajouterAuPanier(button) {
-  const produitDiv = button.closest('.produit');
+    const adminEmail = "athonseehealth@gmail.com";
+    const currentUser = JSON.parse(localStorage.getItem("connectedUser"));
+    const isAdmin = currentUser && currentUser.email === adminEmail;
 
-  const nom = produitDiv.getAttribute('data-nom');
-  const prix = parseFloat(produitDiv.getAttribute('data-prix'));
-  const imgElem = produitDiv.querySelector('img');
-  const imageUrl = imgElem ? imgElem.src : '';
+    if (isAdmin) {
+      // Affiche le lien admin dans le menu
+      document.getElementById("adminLink").style.display = "inline-block";
 
-  const currentUser = localStorage.getItem('currentUser');
-  if (!currentUser) {
-    alert("Vous devez être connecté pour ajouter au panier.");
+      // Ajoute un bouton éditer à côté de chaque <main> <p>
+      document.querySelectorAll("main p").forEach((p, index) => {
+        const btn = document.createElement("button");
+        btn.innerHTML = "✏️";
+        btn.style.marginLeft = "10px";
+        btn.style.background = "none";
+        btn.style.border = "none";
+        btn.style.cursor = "pointer";
+        btn.title = "Modifier ce texte";
+        btn.onclick = () => openEditPopup(p, index);
+        p.insertAdjacentElement("afterend", btn);
+      });
+    }
+
+    let editingElement = null;
+    let editingKey = "";
+
+    function openEditPopup(element, index) {
+      editingElement = element;
+      editingKey = `p${index}`; // clé par index
+      document.getElementById("editTextarea").value = element.textContent;
+      document.getElementById("editPopup").classList.remove("hidden");
+    }
+
+    function closeEditPopup() {
+      document.getElementById("editPopup").classList.add("hidden");
+      editingElement = null;
+      editingKey = "";
+    }
+
+    async function saveEditedText() {
+      if (!editingElement) return;
+
+      const newText = document.getElementById("editTextarea").value.trim();
+      editingElement.textContent = newText;
+      closeEditPopup();
+
+      // Récupère tout le contenu des paragraphes dans main
+      const paragraphs = Array.from(document.querySelectorAll("main p")).map(p => p.textContent);
+
+      // Prépare les données à envoyer
+      const dataToSend = { content: paragraphs };
+
+      try {
+        const response = await fetch("/api/update-content", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(dataToSend)
+        });
+        if (!response.ok) {
+          alert("Contenu sauvegardé avec succès.");
+        } else {
+          alert("Erreur lors de la sauvegarde du contenu.");
+        }
+      } catch (error) {
+        alert("Erreur réseau lors de la sauvegarde.");
+        console.error(error);
+      }
+    }
+  </script>
+
+  <!-- Script popup connexion/inscription -->
+  <script>
+    const loginPopup = document.getElementById("loginPopup");
+const registerPopup = document.getElementById("registerPopup");
+
+function toggleLoginPopup() {
+  loginPopup.classList.toggle("hidden");
+}
+
+function toggleRegisterPopup() {
+  registerPopup.classList.toggle("hidden");
+}
+
+// Gestion formulaire login
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  const comptes = JSON.parse(localStorage.getItem("accounts")) || {};
+
+  if (comptes[email] && comptes[email].password === password) {
+    localStorage.setItem("connectedUser", JSON.stringify({ email }));
+
+    // Faire disparaître la popup après 0.5s puis reload
+    setTimeout(() => {
+      toggleLoginPopup();
+      location.reload();
+    }, 500);
+
+  } else {
+    document.getElementById("loginMessage").textContent = "Email ou mot de passe incorrect.";
+  }
+});
+
+
+// Gestion formulaire inscription
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById("registerUsername").value.trim();
+  const password = document.getElementById("registerPassword").value.trim();
+
+  const comptes = JSON.parse(localStorage.getItem("accounts")) || {};
+
+  const messageElem = document.getElementById("registerMessage");
+
+  if (comptes[email]) {
+    messageElem.textContent = "Cet email est déjà utilisé.";
+    messageElem.style.color = "red";
     return;
   }
 
-  // Panier spécifique à l'utilisateur
-  let panier = JSON.parse(localStorage.getItem(`cart_${currentUser}`)) || [];
+  comptes[email] = { password };
+  localStorage.setItem("accounts", JSON.stringify(comptes));
+  localStorage.setItem("connectedUser", JSON.stringify({ email }));
 
-  const produitExistant = panier.find(item => item.nom === nom);
+  messageElem.textContent = "Compte créé avec succès.";
+  messageElem.style.color = "green";
 
-  if (produitExistant) {
-    produitExistant.quantite++;
-  } else {
-    panier.push({ nom: nom, prix: prix, quantite: 1, imageUrl: imageUrl });
-  }
-
-  localStorage.setItem(`cart_${currentUser}`, JSON.stringify(panier));
-
-  updateCartCount();
-  alert(`${nom} a été ajouté au panier !`);
-}
-
-function getCart() {
-  const currentUser = localStorage.getItem('currentUser');
-  if (!currentUser) return [];
-  return JSON.parse(localStorage.getItem(`cart_${currentUser}`)) || [];
-}
-
-function updateCartCount() {
-  const cart = getCart();
-  const totalQuantity = cart.reduce((sum, item) => sum + (item.quantite || 0), 0);
-  const countElem = document.getElementById('cartCountNav');
-  if (!countElem) return;
-
-  if (totalQuantity > 0) {
-    countElem.style.display = 'inline';
-    countElem.textContent = totalQuantity;
-  } else {
-    countElem.style.display = 'none';
-  }
-}
-
-// Affiche le nom d'utilisateur ou "Non connecté"
-function afficherNomUtilisateur() {
-  const currentUser = localStorage.getItem('currentUser');
-  const userNameDiv = document.getElementById('userName');
-
-  if (userNameDiv) {
-    userNameDiv.textContent = currentUser ? currentUser : "Non connecté";
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  updateCartCount();
-  afficherNomUtilisateur();
+  // Faire disparaître la popup après 0.5s puis reload
+  setTimeout(() => {
+    toggleRegisterPopup();
+    location.reload();
+  }, 500);
 });
-</script>
+  </script>
+
+<!--  -------------------------------------------------->
 
 
 <script>
-  // Appelé au chargement de chaque page
-  window.addEventListener('DOMContentLoaded', updateCartCount);
-</script>
+function enregistrerUtilisateur() {
+  const email = document.getElementById("registerUsername").value.trim();
+  const password = document.getElementById("registerPassword").value.trim();
+  const messageElem = document.getElementById("registerMessage");
 
-<!-- notif panier -->
-
-<script>
-async function majNotifCommandes() {
-  const userName = localStorage.getItem("currentUser");
-  const notifElem = document.getElementById("notifCommande");
-
-  if (!userName || !notifElem) return;
-
-  try {
-    const res = await fetch("http://localhost:3000/api/commandes");
-    if (!res.ok) throw new Error("Erreur API");
-
-    const commandes = await res.json();
-    const commandesUser = commandes.filter(cmd => cmd.utilisateur === userName);
-
-    if (commandesUser.length > 0) {
-      notifElem.textContent = commandesUser.length;
-      notifElem.style.display = "inline-block";
-    } else {
-      notifElem.style.display = "none";
-    }
-  } catch (err) {
-    console.error("Erreur chargement commandes :", err.message);
+  if (!email || !password) {
+    messageElem.textContent = "Veuillez remplir tous les champs.";
+    messageElem.style.color = "red";
+    return;
   }
+
+  fetch("http://localhost:3000/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        messageElem.textContent = "✅ Compte créé avec succès.";
+        messageElem.style.color = "green";
+
+        // Tu peux stocker le nom pour l’utiliser plus tard
+        localStorage.setItem("userName", email);
+      } else if (data.error) {
+        messageElem.textContent = "❌ " + data.error;
+        messageElem.style.color = "red";
+      }
+    })
+    .catch(error => {
+      console.error("Erreur serveur :", error);
+      messageElem.textContent = "❌ Erreur de communication avec le serveur.";
+      messageElem.style.color = "red";
+    });
 }
 
-window.addEventListener('DOMContentLoaded', majNotifCommandes);
-
-  const MAX_USERNAME_LENGTH = 15;
-  const MAX_PASSWORD_LENGTH = 12;
-
-  // === Formulaire Inscription ===
-  const usernameInput = document.getElementById('registerUsername');
-  const passwordInput = document.getElementById('registerPassword');
-  const registerMessage = document.getElementById('registerMessage');
-
-  if (usernameInput && passwordInput && registerMessage) {
-    usernameInput.addEventListener('input', () => {
-      if (usernameInput.value.length > MAX_USERNAME_LENGTH) {
-        registerMessage.textContent = `Nom d'utilisateur trop long (max ${MAX_USERNAME_LENGTH} caractères)`;
-        usernameInput.value = usernameInput.value.slice(0, MAX_USERNAME_LENGTH);
-      } else {
-        registerMessage.textContent = "";
-      }
-    });
-
-    passwordInput.addEventListener('input', () => {
-      if (passwordInput.value.length > MAX_PASSWORD_LENGTH) {
-        registerMessage.textContent = `Mot de passe trop long (max ${MAX_PASSWORD_LENGTH} caractères)`;
-        passwordInput.value = passwordInput.value.slice(0, MAX_PASSWORD_LENGTH);
-      } else {
-        registerMessage.textContent = "";
-      }
-    });
-  }
-
-  // === Formulaire Connexion ===
-  document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.getElementById("loginForm");
-    const loginUsername = document.getElementById("loginUsername");
-    const loginPassword = document.getElementById("loginPassword");
-    const loginMessage = document.getElementById("loginMessage");
-
-    if (!loginForm) return;
-
-    loginForm.addEventListener("submit", function (e) {
-      const username = loginUsername.value.trim();
-      const password = loginPassword.value.trim();
-
-      if (username.length > MAX_USERNAME_LENGTH) {
-        e.preventDefault();
-        loginMessage.textContent = `Le nom d'utilisateur ne peut pas dépasser ${MAX_USERNAME_LENGTH} caractères.`;
-        return;
-      }
-
-      if (password.length > MAX_PASSWORD_LENGTH) {
-        e.preventDefault();
-        loginMessage.textContent = `Le mot de passe ne peut pas dépasser ${MAX_PASSWORD_LENGTH} caractères.`;
-        return;
-      }
-
-      loginMessage.textContent = "";
-    });
-  });
-
+// Lier au formulaire d’inscription
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  enregistrerUtilisateur();
+});
 
 </script>
-
 <script>
-  const loginForm = document.getElementById("loginForm");
-  const loginMessage = document.getElementById("loginMessage");
-
-  loginForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById("loginUsername").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
-    const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
-
-    if (accounts[username] && accounts[username] === password) {
-      localStorage.setItem("currentUser", username);
-      loginMessage.textContent = "Connexion réussie !";
-      loginMessage.style.color = "lightgreen";
-
-      // Ferme la popup après 500ms
-      setTimeout(() => {
-        document.getElementById("loginPopup").classList.add("hidden");
-        loginMessage.textContent = "";
-        loginForm.reset();
-        location.reload(); // recharge la page ou redirige si tu veux
-      }, 500);
-    } else {
-      loginMessage.textContent = "Nom d'utilisateur ou mot de passe incorrect.";
-      loginMessage.style.color = "red";
-    }
-  });
-
-  const loginPopup = document.getElementById("loginPopup");
-
   // Fermer la popup en cliquant à l'extérieur
   window.addEventListener("click", function (event) {
     if (event.target === loginPopup) {
@@ -401,7 +377,6 @@ window.addEventListener('DOMContentLoaded', majNotifCommandes);
     }
   });
 
-  const registerPopup = document.getElementById("registerPopup");
 
   // Fermer la popup d'inscription en cliquant à l'extérieur
   window.addEventListener("click", function (event) {
@@ -412,44 +387,6 @@ window.addEventListener('DOMContentLoaded', majNotifCommandes);
     }
   });
 </script>
-<script>
-  const registerForm = document.getElementById("registerForm");
 
-  registerForm.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const username = document.getElementById("registerUsername").value.trim();
-    const password = document.getElementById("registerPassword").value.trim();
-
-    if (username.length === 0 || password.length === 0) {
-      registerMessage.textContent = "Veuillez remplir tous les champs.";
-      registerMessage.style.color = "red";
-      return;
-    }
-
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
-
-    if (accounts[username]) {
-      registerMessage.textContent = "Ce nom d'utilisateur est déjà pris.";
-      registerMessage.style.color = "red";
-      return;
-    }
-
-    accounts[username] = password;
-    localStorage.setItem("accounts", JSON.stringify(accounts));
-
-    registerMessage.textContent = "Compte créé avec succès !";
-    registerMessage.style.color = "lightgreen";
-
-    setTimeout(() => {
-      registerPopup.classList.add("hidden");
-      registerForm.reset();
-      registerMessage.textContent = "";
-    }, 1500);
-  });
-</script>
-
-
-
+</body>
 </html>
-
