@@ -141,8 +141,8 @@
     const accounts = JSON.parse(localStorage.getItem("accounts")) || {};
 
     function afficherUtilisateur(user) {
-      document.getElementById("usernameDisplay").textContent = user;
-      document.getElementById("passwordDisplay").textContent = accounts[user]?.password || "********";
+      document.getElementById("loginUsername").textContent = user;
+      document.getElementById("loginPassword").textContent = accounts[user]?.password || "********";
     }
 
     if (!currentUser || !accounts[currentUser]) {
