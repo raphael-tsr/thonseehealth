@@ -91,6 +91,49 @@ app.get("/api/commandes", (req, res) => {
 
 
 
+// 🔥 AJOUT : sauvegarde du contenu modifiable par l'admin
+const contenuFile = path.join(__dirname, "api", "contenu.json");
+
+app.post("/api/update-content", (req, res) => {
+  const { content } = req.body;
+
+  if (!Array.isArray(content)) {
+    return res.status(400).json({ error: "Format de contenu invalide." });
+  }
+  console.log("Contenu reçu :", content);
+
+
+  fs.writeFile(contenuFile, JSON.stringify(content, null, 2), (err) => {
+    if (err) {
+      console.error("Erreur d'écriture du fichier contenu.json :", err);
+      return res.status(500).json({ error: "Erreur serveur." });
+    }
+
+    res.sendStatus(200);
+  });
+});
+
+// GET pour récupérer le contenu modifiable
+app.get("/api/contenu", (req, res) => {
+  const contenuFile = path.join(__dirname, "api", "contenu.json");
+
+  fs.readFile(contenuFile, "utf8", (err, data) => {
+    if (err) {
+      console.error("Erreur lecture contenu.json :", err);
+      return res.status(500).json({ error: "Impossible de lire le contenu." });
+    }
+
+    try {
+      const contenu = JSON.parse(data);
+      res.json(contenu);
+    } catch (e) {
+      res.status(500).json({ error: "Erreur parsing JSON." });
+    }
+  });
+});
+
+
+
 
 // Démarrage serveur
 const PORT = 3000;

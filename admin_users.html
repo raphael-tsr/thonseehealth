@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Utilisateurs Admin</title>
+  <style>
+    body {
+      background-color: #0D0D0D;
+      color: #FAF9F6;
+      font-family: 'Lato', sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto 40px auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #333;
+      text-align: center;
+    }
+    th {
+      background-color: #FFD700;
+      color: #000;
+    }
+    tbody tr:nth-child(odd) {
+      background-color: #1a1a1a;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #121212;
+    }
+    .commande-total {
+      font-weight: bold;
+      color: #FFD700;
+      margin-top: -10px;
+      margin-bottom: 40px;
+      text-align: right;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .utilisateur-block {
+      border-top: 2px solid #FFD700;
+      margin-top: 40px;
+      padding-top: 20px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #notAuthorized {
+      color: red;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Utilisateurs enregistrés</h1>
+<div id="notAuthorized" style="display: none;">⛔ Accès refusé. Page réservée aux administrateurs.</div>
+<div id="users-container"></div>
+
+<script>
+  const currentUser = JSON.parse(localStorage.getItem("connectedUser"));
+  const admins = ["athonseehealth@gmail.com"];
+
+  if (!currentUser || !admins.includes(currentUser.email)) {
+    document.getElementById("notAuthorized").style.display = "block";
+    document.getElementById("users-container").style.display = "none";
+  } else {
+    chargerTousLesUtilisateurs();
+  }
+
+  async function chargerTousLesUtilisateurs() {
+    try {
+      const res = await fetch('http://localhost:3000/api/users');
+      if (!res.ok) throw new Error('Erreur lors du chargement des utilisateurs');
+
+      const usersObj = await res.json(); // objet avec emails comme clés
+
+      // Convertir l'objet en tableau [{email, password}, ...]
+      const users = Object.entries(usersObj).map(([email, data]) => ({
+        email,
+        password: data.password,
+      }));
+
+      const container = document.getElementById('users-container');
+      container.innerHTML = '';
+
+      if (users.length === 0) {
+        container.innerHTML = '<p>Aucun utilisateur trouvé.</p>';
+        return;
+      }
+
+      const blocUsers = document.createElement('div');
+      blocUsers.className = 'utilisateur-block';
+      blocUsers.innerHTML = `<h2>📋 Comptes Utilisateurs :</h2>`;
+
+      users.forEach(user => {
+        blocUsers.innerHTML += `
+          <p><strong>Email :</strong> ${user.email}<br>
+          <strong>Mot de passe :</strong> ${user.password}</p><hr>`;
+      });
+
+      container.appendChild(blocUsers);
+
+    } catch (err) {
+      document.getElementById('users-container').innerHTML = `<p style="color:red;">${err.message}</p>`;
+    }
+  }
+</script>
+
+</body>
+</html>

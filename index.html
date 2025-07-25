@@ -14,32 +14,36 @@
 
 <body>
 
-  <header class="tete">
-    <!-- Icône utilisateur -->
-    <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
-      <a class="text-decoration" href="parametre.html">
-        <div id="userIcon">👤</div>
-      </a>
-    </div>
+<header class="tete">
+  <!-- Icône utilisateur -->
+  <div class="user" onclick="toggleAccountsPopup()" style="cursor:pointer;">
+    <a class="text-decoration" href="parametre.html">
+      <div id="userIcon">👤</div>
+    </a>
+  </div>
 
-    <div class="logo">Thonsee <span>Health</span></div>
+  <div class="logo">Thonsee <span>Health</span></div>
 
-    <!-- Bouton menu burger pour mobile -->
-    <div class="menu-toggle" onclick="toggleMobileMenu()">☰</div>
+  <!-- Bouton menu burger pour mobile -->
+  <div class="menu-toggle" onclick="toggleMobileMenu()">☰</div>
 
-    <!-- Menu principal -->
-    <nav class="menu" id="mainMenu">
-      <a href="index.html">Accueil</a>
-      <a href="produits.html">Nos Produits</a>
-      <a href="contact.html">Contact</a>
-      <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
-      <a href="#" onclick="toggleLoginPopup(); return false;">Se connecter</a>
-      <a href="#" onclick="toggleRegisterPopup(); return false;">S'inscrire</a>
+  <!-- Menu principal -->
+  <nav class="menu" id="mainMenu">
+    <a href="index.html">Accueil</a>
+    <a href="produits.html">Nos Produits</a>
+    <a href="contact.html">Contact</a>
+    <a href="panier.html">Panier <span id="cartCountNav">0</span></a>
+    <a href="#" onclick="toggleLoginPopup(); return false;">Se connecter</a>
+    <a href="#" onclick="toggleRegisterPopup(); return false;">S'inscrire</a>
 
-      <!-- Lien vers la page Admin (invisible par défaut) -->
-      <a href="admin.html" id="adminLink" style="display: none; color: gold;">Admin</a>
-    </nav>
-  </header>
+    <!-- Lien vers la page Admin Commande -->
+    <a href="admin_commande.html" id="adminLink" style="display: none; color: gold;">Admin Commande</a>
+
+    <!-- Lien vers la page Admin Utilisateurs -->
+    <a href="admin_users.html" id="adminUsersLink" style="display: none; color: gold;">Admin Utilisateurs</a>
+  </nav>
+</header>
+
 
   <main>
     <!-- Section Accueil -->
@@ -178,78 +182,79 @@
   </div>
 
 
-  <!-- Script gestion édition du contenu (admin only) -->
-  <script>
-    const adminEmail = "athonseehealth@gmail.com";
-    const currentUser = JSON.parse(localStorage.getItem("connectedUser"));
-    const isAdmin = currentUser && currentUser.email === adminEmail;
+<!-- Script gestion édition du contenu (admin only) -->
+<script>
+  const adminEmail = "athonseehealth@gmail.com";
+  const currentUser = JSON.parse(localStorage.getItem("connectedUser"));
+  const admins = [adminEmail];
+  const isAdmin = currentUser && admins.includes(currentUser.email);
 
-    if (isAdmin) {
-      // Affiche le lien admin dans le menu
-      document.getElementById("adminLink").style.display = "inline-block";
+  if (isAdmin) {
+    // Affiche les liens admin
+    document.getElementById("adminLink").style.display = "inline-block";
+    document.getElementById("adminUsersLink").style.display = "inline-block";
 
-      // Ajoute un bouton éditer à côté de chaque <main> <p>
-      document.querySelectorAll("main p").forEach((p, index) => {
-        const btn = document.createElement("button");
-        btn.innerHTML = "✏️";
-        btn.style.marginLeft = "10px";
-        btn.style.background = "none";
-        btn.style.border = "none";
-        btn.style.cursor = "pointer";
-        btn.title = "Modifier ce texte";
-        btn.onclick = () => openEditPopup(p, index);
-        p.insertAdjacentElement("afterend", btn);
+    // Ajoute un bouton ✏️ à chaque <main> <p>
+    document.querySelectorAll("main p").forEach((p, index) => {
+      const btn = document.createElement("button");
+      btn.innerHTML = "✏️";
+      btn.style.marginLeft = "10px";
+      btn.style.background = "none";
+      btn.style.border = "none";
+      btn.style.cursor = "pointer";
+      btn.title = "Modifier ce texte";
+      btn.onclick = () => openEditPopup(p, index);
+      p.insertAdjacentElement("afterend", btn);
+    });
+  }
+
+  let editingElement = null;
+
+  function openEditPopup(element, index) {
+    editingElement = element;
+    document.getElementById("editTextarea").value = element.textContent;
+    document.getElementById("editPopup").classList.remove("hidden");
+  }
+
+  function closeEditPopup() {
+    document.getElementById("editPopup").classList.add("hidden");
+    editingElement = null;
+  }
+
+  async function saveEditedText() {
+    if (!editingElement) return;
+
+    const newText = document.getElementById("editTextarea").value.trim();
+    editingElement.textContent = newText;
+    closeEditPopup();
+
+    // Récupère tous les <p> dans <main>
+    const paragraphs = Array.from(document.querySelectorAll("main p")).map(p => p.textContent);
+    const dataToSend = { content: paragraphs };
+
+    try {
+      const response = await fetch("/api/update-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataToSend)
       });
-    }
 
-    let editingElement = null;
-    let editingKey = "";
-
-    function openEditPopup(element, index) {
-      editingElement = element;
-      editingKey = `p${index}`; // clé par index
-      document.getElementById("editTextarea").value = element.textContent;
-      document.getElementById("editPopup").classList.remove("hidden");
-    }
-
-    function closeEditPopup() {
-      document.getElementById("editPopup").classList.add("hidden");
-      editingElement = null;
-      editingKey = "";
-    }
-
-    async function saveEditedText() {
-      if (!editingElement) return;
-
-      const newText = document.getElementById("editTextarea").value.trim();
-      editingElement.textContent = newText;
-      closeEditPopup();
-
-      // Récupère tout le contenu des paragraphes dans main
-      const paragraphs = Array.from(document.querySelectorAll("main p")).map(p => p.textContent);
-
-      // Prépare les données à envoyer
-      const dataToSend = { content: paragraphs };
-
-      try {
-        const response = await fetch("/api/update-content", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(dataToSend)
-        });
-        if (!response.ok) {
-          alert("Contenu sauvegardé avec succès.");
-        } else {
-          alert("Erreur lors de la sauvegarde du contenu.");
-        }
-      } catch (error) {
-        alert("Erreur réseau lors de la sauvegarde.");
-        console.error(error);
+      if (response.ok) {
+        alert("Contenu sauvegardé avec succès.");
+      } else {
+      const errorText = await response.text();
+        alert("Erreur serveur : " + errorText);
       }
+
+    } catch (error) {
+      alert("Erreur réseau lors de la sauvegarde.");
+      console.error(error);
     }
-  </script>
+  }
+</script>
+
+
+
 
   <!-- Script popup connexion/inscription -->
   <script>
@@ -387,6 +392,7 @@ document.getElementById("registerForm").addEventListener("submit", function (e) 
     }
   });
 </script>
+
 
 </body>
 </html>
